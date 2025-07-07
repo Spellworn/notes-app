@@ -1,0 +1,39 @@
+.notesWrapper {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    row-gap: 30px;
+    column-gap: 20px;
+    padding: 0 5vw 0 5vw;
+    justify-items: center;
+}
+
+button:hover {
+    border: 1px solid #F2BB4B;
+
+}
+
+@media (max-width: 1200px) {
+    .notesWrapper {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 1000px) {
+    .notesWrapper {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+
+@media (max-width: 700px) {
+    .notesWrapper {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 400px) {
+    .notesWrapper {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}

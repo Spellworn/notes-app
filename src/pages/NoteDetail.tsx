@@ -1,61 +1,41 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../redux/hooks.ts";
-import { noteDeleted, noteUpdated, selectNotes } from "../redux/notesSlice.ts";
-import * as React from "react";
+import { useCallback } from "react";
+import { useAppDispatch } from "../redux/store";
+import { notesActions } from "../redux/notesSlice.ts";
+import type { NoteId } from "../redux/Note.ts";
+import { NotesUpdateFields } from "../components/NotesUpdateFields.tsx";
 
 export const NoteDetail = () => {
+  const { id } = useParams<NoteId>();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { id } = useParams();
 
-  const notes = useAppSelector(selectNotes);
-  const note = notes.find((note) => note.id === id);
-
-  if (!note || !id) {
-    return <span>Заметка не найдена</span>;
-  }
-
-  const handleChangeTitle = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    dispatch(noteUpdated({ id, text: e.currentTarget.value, title: true }));
-  };
-  const handleChangeBody = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    dispatch(noteUpdated({ id, text: e.currentTarget.value, title: false }));
-  };
-
-  const handleDeleteNote = () => {
-    dispatch(noteDeleted(id));
-    navigate("/");
-  };
-
-  const handleReturn = () => {
-    if (!note.title && !note.body) {
-      handleDeleteNote();
+  const handleDeleteNote = useCallback(() => {
+    if (id) {
+      dispatch(notesActions.deleteNote(id));
+      navigate("/");
     }
-    navigate("/");
-  };
+  }, [dispatch, id, navigate]);
 
-  const handlePopState = () => {
-    if (!note.title && !note.body) {
-      handleDeleteNote();
-    }
-  };
-
-  window.addEventListener("popstate", handlePopState);
+  // TODO: сделать фильтр на пустые заметки
+  // useEffect(() => {
+  //   const handleReset = () => {
+  //     if (isEmpty && isEmptyRef.current !== isEmpty) {
+  //       handleDeleteNote();
+  //       isEmptyRef.current = isEmpty;
+  //     }
+  //   };
+  //
+  //   return () => {
+  //     handleReset();
+  //   };
+  // }, [handleDeleteNote, isEmpty]);
 
   return (
     <div>
-      <textarea
-        onChange={handleChangeTitle}
-        value={note.title}
-        placeholder={"Введите заголовок"}
-      />
-      <textarea
-        onChange={handleChangeBody}
-        value={note.body}
-        placeholder={"Введите текст"}
-      />
-
-      <button onClick={handleReturn}> Обратно вернуца </button>
+      {!id && <h1>Заметка не фурычит</h1>}
+      <NotesUpdateFields id={id} />
+      <button onClick={() => navigate("/")}> Обратно вернуца </button>
       <button onClick={handleDeleteNote}> удалить </button>
     </div>
   );

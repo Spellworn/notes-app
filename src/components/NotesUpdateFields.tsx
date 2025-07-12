@@ -1,15 +1,24 @@
-import { type ChangeEvent } from "react";
+import { type ChangeEvent, useEffect, useState } from "react";
 import { notesRules } from "../redux/noteRules.ts";
 import { useAppDispatch, useAppSelector } from "../redux/store.ts";
-import { adapterSelectors, notesActions } from "../redux/notesSlice.ts";
-import type { NoteId } from "../redux/Note.ts";
+import { adapterSelectors, updateNote } from "../redux/notesSlice.ts";
+import type { NoteId, Notes } from "../redux/Note.ts";
+import { useDebounce } from "../hooks/useDebounce.ts";
 
 interface NotesUpdateFieldsProps {
   id: NoteId | undefined;
 }
 
+type PayloadType = Partial<Notes> & { id: NoteId | undefined };
+
 export const NotesUpdateFields = ({ id }: NotesUpdateFieldsProps) => {
   const dispatch = useAppDispatch();
+  const [editTerm, setEditTerm] = useState<PayloadType>({
+    id: id,
+    body: undefined,
+    title: undefined,
+  });
+  const debouncedEditTerm = useDebounce<PayloadType>(editTerm, 10);
 
   const note = useAppSelector((state) =>
     // TODO: написать кастомный селектор для айди
@@ -28,10 +37,16 @@ export const NotesUpdateFields = ({ id }: NotesUpdateFieldsProps) => {
         title: updateVariant === "title" ? e.currentTarget.value : undefined,
       });
       if (payload) {
-        dispatch(notesActions.updateNote(payload));
+        setEditTerm(payload);
       }
     }
   };
+
+  useEffect(() => {
+    if (id) {
+      dispatch(updateNote(debouncedEditTerm));
+    }
+  }, [debouncedEditTerm, dispatch, id]);
 
   return (
     note && (

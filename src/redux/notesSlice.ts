@@ -36,14 +36,24 @@ export const notesSlice = createSlice({
     },
     updateNote: (
       state,
-      { payload }: PayloadAction<Partial<Notes> & { id: NoteId }>,
+      { payload }: PayloadAction<Partial<Notes> & { id: NoteId | undefined }>,
     ) => {
-      // TODO: разобраца че это за хуйня ваще
-      notesAdapter.upsertOne(state.notes, {
-        ...state.notes.entities[payload.id],
-        title: payload.title,
-        body: payload.body,
-      });
+      if (payload.id) {
+        // TODO: разобраца че это за хуйня ваще
+        notesAdapter.upsertOne(state.notes, {
+          ...state.notes.entities[payload.id],
+          // title: payload.title,
+          // body: payload.body,
+          title:
+            payload.title !== undefined
+              ? payload.title
+              : state.notes.entities[payload.id]?.title,
+          body:
+            payload.body !== undefined
+              ? payload.body
+              : state.notes.entities[payload.id]?.body,
+        });
+      }
     },
     deleteNote: (state, { payload }: PayloadAction<NoteId>) => {
       notesAdapter.removeOne(state.notes, payload);
@@ -91,6 +101,9 @@ export const selectSearchedItems = createSelector(
       .map((note) => note.id);
   },
 );
+
+export const { addNote, updateNote, deleteNote, setSearch } =
+  notesSlice.actions;
 
 // TODO:
 // export const selectId = (state: RootState) => state.notes.notes[0].id;

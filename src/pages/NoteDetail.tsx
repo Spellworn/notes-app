@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useCallback } from "react";
 import { useAppDispatch } from "../redux/store";
-import { notesActions } from "../redux/notesSlice.ts";
+import { deleteNote } from "../redux/notesSlice.ts";
 import type { NoteId } from "../redux/Note.ts";
 import { NotesUpdateFields } from "../components/NotesUpdateFields.tsx";
 
@@ -12,7 +12,7 @@ export const NoteDetail = () => {
 
   const handleDeleteNote = useCallback(() => {
     if (id) {
-      dispatch(notesActions.deleteNote(id));
+      dispatch(deleteNote(id));
       navigate("/");
     }
   }, [dispatch, id, navigate]);

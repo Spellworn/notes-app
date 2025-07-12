@@ -8,12 +8,10 @@ function App() {
   return (
     <Provider store={store}>
       <BrowserRouter>
-        <>
-          <Routes>
-            <Route path="/" element={<NotesPage />} />
-            <Route path="/notes/:id" element={<NoteDetail />} />
-          </Routes>
-        </>
+        <Routes>
+          <Route path="/" element={<NotesPage />} />
+          <Route path="/notes/:id" element={<NoteDetail />} />
+        </Routes>
       </BrowserRouter>
     </Provider>
   );

@@ -7,18 +7,17 @@ import {
 import { type NoteId, type Notes } from "./Note";
 import { fetchNotes } from "./thunks.ts";
 import { notesAdapter } from "./adapters.ts";
+import type { RootState } from "./store.ts";
 
 type StatusType = "error" | "loading" | "fulfilled";
 
 interface NotesState {
   notes: EntityState<Notes, NoteId>;
-  search: string;
   status?: StatusType;
 }
 
 const initialState: NotesState = {
   notes: notesAdapter.getInitialState(),
-  search: "",
 };
 
 export const notesSlice = createSlice({
@@ -58,10 +57,6 @@ export const notesSlice = createSlice({
     deleteNote: (state, { payload }: PayloadAction<NoteId>) => {
       notesAdapter.removeOne(state.notes, payload);
     },
-    // TODO:
-    setSearch: (state, { payload }: PayloadAction<string>) => {
-      state.search = payload;
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -78,18 +73,23 @@ export const notesSlice = createSlice({
   },
   selectors: {
     notes: (state) => state.notes,
-    search: (state) => state.search,
   },
 });
 
-export const { selectors: notesSelectors, actions: notesActions } = notesSlice;
+export const { selectors: notesSelectors } = notesSlice;
 
 // адаптеру нужно понимать в общем сторе как дойти до наших notes
 export const adapterSelectors = notesAdapter.getSelectors(notesSelectors.notes);
 
-export const selectSearchedItems = createSelector(
-  [adapterSelectors.selectAll, notesSelectors.search],
-  (notes, search) => {
+export const selectNoteById = (id: NoteId | undefined) =>
+  createSelector([(state: RootState) => state], (state) => {
+    if (!id) {
+      return undefined;
+    }
+    return adapterSelectors.selectById(state, id);
+  });
+export const selectSearchedItems = (search: string) =>
+  createSelector([adapterSelectors.selectAll], (notes) => {
     if (!search) return notes.map((note) => note.id);
 
     return notes
@@ -99,11 +99,9 @@ export const selectSearchedItems = createSelector(
           note.body?.toLowerCase().includes(search.toLowerCase()),
       )
       .map((note) => note.id);
-  },
-);
+  });
 
-export const { addNote, updateNote, deleteNote, setSearch } =
-  notesSlice.actions;
+export const { addNote, updateNote, deleteNote } = notesSlice.actions;
 
 // TODO:
 // export const selectId = (state: RootState) => state.notes.notes[0].id;

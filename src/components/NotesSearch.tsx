@@ -1,22 +1,19 @@
-import { type ChangeEventHandler, useEffect, useState } from "react";
-import { setSearch } from "../redux/notesSlice.ts";
-import { useAppDispatch } from "../redux/store.ts";
+import { type ChangeEventHandler } from "react";
+
 import styles from "../modules/NotePage.module.css";
-import { useDebounce } from "../hooks/useDebounce.ts";
 
-export const NotesSearch = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const debouncedSearchTerm = useDebounce<string>(searchTerm, 500);
+interface NotesSearchProps {
+  searchTerm: string;
+  setSearchTerm: (searchTerm: string) => void;
+}
 
-  const dispatch = useAppDispatch();
-
+export const NotesSearch = ({
+  searchTerm,
+  setSearchTerm,
+}: NotesSearchProps) => {
   const handleSearchChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     setSearchTerm(e.currentTarget.value);
   };
-
-  useEffect(() => {
-    dispatch(setSearch(debouncedSearchTerm));
-  }, [debouncedSearchTerm, dispatch]);
 
   return (
     <input

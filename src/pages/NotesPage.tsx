@@ -15,18 +15,16 @@ export const NotesPage = () => {
   useEffect(() => {
     // чтобы не слетала дата
     if (!notes || notes.length === 0) {
+      console.log("фетчим схуяли два раза");
       dispatch(fetchNotes());
     }
   }, [dispatch, notes]);
-
-  // TODO: вот отдельный компач✅
 
   return (
     <section>
       <div className={styles.container}>
         <h2>Note App</h2>
         <NotesAdd />
-        {/*TODO: прикрутить дебаунс */}
       </div>
       <NotesList />
     </section>

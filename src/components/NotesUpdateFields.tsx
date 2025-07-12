@@ -1,7 +1,7 @@
 import { type ChangeEvent, useEffect, useState } from "react";
 import { notesRules } from "../redux/noteRules.ts";
 import { useAppDispatch, useAppSelector } from "../redux/store.ts";
-import { adapterSelectors, updateNote } from "../redux/notesSlice.ts";
+import { selectNoteById, updateNote } from "../redux/notesSlice.ts";
 import type { NoteId, Notes } from "../redux/Note.ts";
 import { useDebounce } from "../hooks/useDebounce.ts";
 
@@ -20,17 +20,14 @@ export const NotesUpdateFields = ({ id }: NotesUpdateFieldsProps) => {
   });
   const debouncedEditTerm = useDebounce<PayloadType>(editTerm, 10);
 
-  const note = useAppSelector((state) =>
-    // TODO: написать кастомный селектор для айди
-    adapterSelectors.selectById(state, id!),
-  );
+  const note = useAppSelector(selectNoteById(id));
 
   // TODO: прям дебаунс
   const handleNoteUpdate = (
     e: ChangeEvent<HTMLTextAreaElement>,
     updateVariant: "title" | "body",
   ) => {
-    if (id) {
+    if (id && note) {
       const payload = notesRules.handleUpdate(note, {
         id,
         body: updateVariant === "body" ? e.currentTarget.value : undefined,

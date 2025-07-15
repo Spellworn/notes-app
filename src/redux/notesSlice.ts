@@ -38,19 +38,27 @@ export const notesSlice = createSlice({
       { payload }: PayloadAction<Partial<Notes> & { id: NoteId | undefined }>,
     ) => {
       if (payload.id) {
+        console.log(payload);
+        console.log(payload.title, payload.body);
         // TODO: разобраца че это за хуйня ваще
         notesAdapter.upsertOne(state.notes, {
           ...state.notes.entities[payload.id],
           // title: payload.title,
           // body: payload.body,
+
           title:
             payload.title !== undefined
               ? payload.title
-              : state.notes.entities[payload.id]?.title,
+              : payload.body === undefined
+                ? undefined
+                : state.notes.entities[payload.id]?.title,
+
           body:
             payload.body !== undefined
               ? payload.body
-              : state.notes.entities[payload.id]?.body,
+              : payload.title === undefined
+                ? undefined
+                : state.notes.entities[payload.id]?.body,
         });
       }
     },

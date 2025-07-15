@@ -39,7 +39,6 @@ export const notesSlice = createSlice({
     ) => {
       if (payload.id) {
         console.log(payload);
-        console.log(payload.title, payload.body);
         // TODO: разобраца че это за хуйня ваще
         notesAdapter.upsertOne(state.notes, {
           ...state.notes.entities[payload.id],
@@ -49,14 +48,16 @@ export const notesSlice = createSlice({
           title:
             payload.title !== undefined
               ? payload.title
-              : payload.body === undefined
+              : payload.body === undefined &&
+                  !state.notes.entities[payload.id].title
                 ? undefined
                 : state.notes.entities[payload.id]?.title,
 
           body:
             payload.body !== undefined
               ? payload.body
-              : payload.title === undefined
+              : payload.title === undefined &&
+                  !state.notes.entities[payload.id].body
                 ? undefined
                 : state.notes.entities[payload.id]?.body,
         });
@@ -107,6 +108,14 @@ export const selectSearchedItems = (search: string) =>
           note.body?.toLowerCase().includes(search.toLowerCase()),
       )
       .map((note) => note.id);
+  });
+
+export const selectExistingId = (id: NoteId | undefined) =>
+  createSelector([(state: RootState) => state], (state) => {
+    if (!id || !adapterSelectors.selectById(state, id)) {
+      return undefined;
+    }
+    return id;
   });
 
 export const { addNote, updateNote, deleteNote } = notesSlice.actions;

@@ -1,0 +1,46 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    max-width:20vw;
+    gap: 15px;
+    justify-content: center;
+    align-items: stretch;
+    height: 100vh;
+    background-color: #f1f1f1;
+    transition: all 0.5s ease;
+    padding:0 10px 0 10px ;
+    box-shadow: 2px 0 14px 0 rgba(39, 39, 39, 0.2);
+
+}
+
+.buttonContainer {
+    display: flex;
+    height: auto;
+    width: auto;
+    position: relative;
+
+}
+
+
+.navbarButton {
+    all: unset;
+    position: absolute;
+    width: 100px;
+    height: 3vh;
+    border: 1px solid #E8E8E8;
+    border-radius: 12px;
+    padding-left: 5px;
+    font-family: Helvetica, sans-serif;
+    font-size: 12px;
+    transition: transform 0.1s ease;
+    outline: 0;
+    outline-offset: 0;
+    background-color: white;
+    text-align: center;
+
+}
+
+.folderButton {
+    all: unset;
+}
+

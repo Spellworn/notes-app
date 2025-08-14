@@ -5,6 +5,7 @@ export interface Notes {
   title: string | undefined;
   body: string | undefined;
   date: string;
+  folder: string;
 }
 
 export interface Data {
@@ -15,7 +16,11 @@ export interface Data {
 }
 
 export interface UpdateDataAction {
+  id: NoteId | undefined;
+  text: string | undefined;
+}
+
+export interface NoteAdd {
   id: NoteId;
-  body: string;
-  title: string;
+  folder: string;
 }

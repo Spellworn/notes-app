@@ -4,13 +4,17 @@ import { useAppDispatch } from "../redux/store.ts";
 import { useNavigate } from "react-router-dom";
 import styles from "../modules/NotePage.module.css";
 
-export const NotesAdd = () => {
+interface NotesAddProps {
+  folder: string;
+}
+
+export const NotesAdd = ({ folder }: NotesAddProps) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const handleAddNote = () => {
     const id = nanoid();
-    dispatch(addNote(id));
+    dispatch(addNote({ id, folder }));
     navigate(`/notes/${id}`);
   };
 

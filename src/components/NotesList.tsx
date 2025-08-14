@@ -1,4 +1,4 @@
-import { selectSearchedItems } from "../redux/notesSlice.ts";
+import { selectSearchedItemsByFolder } from "../redux/notesSlice.ts";
 import { Notes } from "./Notes.tsx";
 import styles from "../modules/NotesList.module.css";
 import { useAppSelector } from "../redux/store.ts";
@@ -6,12 +6,17 @@ import { NotesSearch } from "./NotesSearch.tsx";
 import { useState } from "react";
 import { useDebounce } from "../hooks/useDebounce.ts";
 
-export const NotesList = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const debouncedSearchTerm = useDebounce(searchTerm, 5000);
-  // TODO: сортировка по дате в селектор
+interface NotesListProps {
+  folder: string;
+}
 
-  const notesIds = useAppSelector(selectSearchedItems(debouncedSearchTerm));
+export const NotesList = ({ folder }: NotesListProps) => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
+  const notesIds = useAppSelector(
+    selectSearchedItemsByFolder(debouncedSearchTerm, folder),
+  );
 
   return (
     <>

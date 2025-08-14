@@ -4,10 +4,14 @@ import {
   type EntityState,
   type PayloadAction,
 } from "@reduxjs/toolkit";
-import { type NoteId, type Notes } from "./Note";
+import {
+  type NoteAdd,
+  type NoteId,
+  type Notes,
+  type UpdateDataAction,
+} from "./Note";
 import { fetchNotes } from "./thunks.ts";
 import { notesAdapter } from "./adapters.ts";
-import type { RootState } from "./store.ts";
 
 type StatusType = "error" | "loading" | "fulfilled";
 
@@ -24,45 +28,35 @@ export const notesSlice = createSlice({
   name: "notes",
   initialState,
   reducers: {
-    addNote(state, { payload }: PayloadAction<NoteId>) {
+    addNote(state, { payload }: PayloadAction<NoteAdd>) {
       notesAdapter.addOne(state.notes, {
-        id: payload,
+        id: payload.id,
         title: "",
         body: "",
         // TODO: thunk
         date: new Date().toISOString(),
+        folder: payload.folder ? payload.folder : "Заметки",
       });
     },
-    updateNote: (
-      state,
-      { payload }: PayloadAction<Partial<Notes> & { id: NoteId | undefined }>,
-    ) => {
+
+    updateTitle: (state, { payload }: PayloadAction<UpdateDataAction>) => {
       if (payload.id) {
-        console.log(payload);
-        // TODO: разобраца че это за хуйня ваще
         notesAdapter.upsertOne(state.notes, {
           ...state.notes.entities[payload.id],
-          // title: payload.title,
-          // body: payload.body,
-
-          title:
-            payload.title !== undefined
-              ? payload.title
-              : payload.body === undefined &&
-                  !state.notes.entities[payload.id].title
-                ? undefined
-                : state.notes.entities[payload.id]?.title,
-
-          body:
-            payload.body !== undefined
-              ? payload.body
-              : payload.title === undefined &&
-                  !state.notes.entities[payload.id].body
-                ? undefined
-                : state.notes.entities[payload.id]?.body,
+          title: payload.text,
         });
       }
     },
+
+    updateBody: (state, { payload }: PayloadAction<UpdateDataAction>) => {
+      if (payload.id) {
+        notesAdapter.upsertOne(state.notes, {
+          ...state.notes.entities[payload.id],
+          body: payload.text,
+        });
+      }
+    },
+
     deleteNote: (state, { payload }: PayloadAction<NoteId>) => {
       notesAdapter.removeOne(state.notes, payload);
     },
@@ -90,35 +84,54 @@ export const { selectors: notesSelectors } = notesSlice;
 // адаптеру нужно понимать в общем сторе как дойти до наших notes
 export const adapterSelectors = notesAdapter.getSelectors(notesSelectors.notes);
 
-export const selectNoteById = (id: NoteId | undefined) =>
-  createSelector([(state: RootState) => state], (state) => {
+export const selectNoteById = createSelector(
+  [adapterSelectors.selectEntities, (_, id: NoteId | undefined) => id],
+  (notes, id) => {
     if (!id) {
       return undefined;
     }
-    return adapterSelectors.selectById(state, id);
-  });
-export const selectSearchedItems = (search: string) =>
+    return notes[id];
+  },
+);
+
+export const selectSearchedItemsByFolder = (search: string, folder: string) =>
   createSelector([adapterSelectors.selectAll], (notes) => {
-    if (!search) return notes.map((note) => note.id);
+    if (!search)
+      return notes
+        .filter((note) =>
+          folder
+            ? (note.title || note.body) && note.folder === folder
+            : note.title || note.body,
+        )
+        .map((note) => note.id);
 
     return notes
-      .filter(
-        (note: Notes) =>
-          note.title?.toLowerCase().includes(search.toLowerCase()) ||
-          note.body?.toLowerCase().includes(search.toLowerCase()),
+      .filter((note: Notes) =>
+        folder
+          ? (note.title?.toLowerCase().includes(search.toLowerCase()) ||
+              note.body?.toLowerCase().includes(search.toLowerCase())) &&
+            note.folder === folder
+          : note.title?.toLowerCase().includes(search.toLowerCase()) ||
+            note.body?.toLowerCase().includes(search.toLowerCase()),
       )
       .map((note) => note.id);
   });
 
-export const selectExistingId = (id: NoteId | undefined) =>
-  createSelector([(state: RootState) => state], (state) => {
-    if (!id || !adapterSelectors.selectById(state, id)) {
-      return undefined;
-    }
-    return id;
-  });
+// export const selectSearchedItems = (search: string) =>
+//   createSelector([adapterSelectors.selectAll], (notes) => {
+//     if (!search)
+//       return notes
+//         .filter((note) => note.title || note.body)
+//         .map((note) => note.id);
+//
+//     return notes
+//       .filter(
+//         (note: Notes) =>
+//           note.title?.toLowerCase().includes(search.toLowerCase()) ||
+//           note.body?.toLowerCase().includes(search.toLowerCase()),
+//       )
+//       .map((note) => note.id);
+//   });
 
-export const { addNote, updateNote, deleteNote } = notesSlice.actions;
-
-// TODO:
-// export const selectId = (state: RootState) => state.notes.notes[0].id;
+export const { addNote, updateTitle, updateBody, deleteNote } =
+  notesSlice.actions;

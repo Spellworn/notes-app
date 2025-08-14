@@ -1,14 +1,19 @@
 import { createAsyncThunk, nanoid } from "@reduxjs/toolkit";
 import type { Data } from "./Note.ts";
 
-// TODO: почитать про dotEnv
-const url = "https://dummyjson.com/posts";
+const url = import.meta.env.VITE_REACT_APP_API_KEY;
 
 const getRandomDate = () => {
   const now = new Date();
-  const oneYearAgo = new Date(now.setFullYear(now.getFullYear() - 1));
+  const oneYearAgo = new Date(
+    now.getFullYear() - 1,
+    now.getMonth(),
+    now.getDate(),
+  );
+
   return new Date(
-    now.getTime() + Math.random() * (oneYearAgo.getTime() - now.getTime()),
+    oneYearAgo.getTime() +
+      Math.random() * (now.getTime() - oneYearAgo.getTime()),
   ).toISOString();
 };
 
@@ -21,6 +26,7 @@ export const fetchNotes = createAsyncThunk("todos/fetchNotes", async () => {
     title: note.title,
     body: note.body,
     date: getRandomDate(),
+    folder: "Заметки",
   }));
 
   return orderedNotes.slice().sort((a, b) => b.date.localeCompare(a.date));

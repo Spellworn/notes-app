@@ -1,12 +1,14 @@
-import { deleteFolder } from "../../redux/foldersSlice.ts";
-import { DropdownMenu } from "@gravity-ui/uikit";
+import { deleteFolder, renameFolder } from "../../redux/foldersSlice.ts";
+import { DropdownMenu, Modal } from "@gravity-ui/uikit";
 import { useAppDispatch, useAppSelector } from "../../redux/store.ts";
 import {
   deleteNotesByFolder,
   selectIdsByFolder,
+  updateNotesFolder,
 } from "../../redux/notesSlice.ts";
 // import styles from "../../modules/DropdownButtonFolder.module.css";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
+import styles from "../../modules/ModalAddFolder.module.css";
 
 interface DropdownButtonProps {
   id: string;
@@ -17,6 +19,8 @@ export const DropdownButtonFolder = ({
   id,
   folderName,
 }: DropdownButtonProps) => {
+  const [open, setOpen] = useState(false);
+  const [folder, setFolder] = useState("");
   const dispatch = useAppDispatch();
   const idsByFolder = useAppSelector(selectIdsByFolder(folderName));
 
@@ -28,12 +32,29 @@ export const DropdownButtonFolder = ({
     [dispatch, idsByFolder],
   );
 
+  const handleRenameFolder = useCallback(
+    (id: string) => {
+      if (folder) {
+        dispatch(renameFolder({ id, folderName: folder }));
+        dispatch(updateNotesFolder({ ids: idsByFolder, folderName: folder }));
+        setOpen(false);
+        setFolder("");
+      } else {
+        console.log(
+          "Нада сделать алерт или чет еще чтобы заполнил папку падла",
+        );
+        alert("Введите название папки");
+      }
+    },
+    [dispatch, folder, idsByFolder],
+  );
+
   return (
     <>
       <DropdownMenu
         items={[
           {
-            action: () => console.log("Редактирование"),
+            action: () => setOpen(true),
             text: "Переименовать",
           },
           {
@@ -43,6 +64,29 @@ export const DropdownButtonFolder = ({
           },
         ]}
       />
+      {open && (
+        <Modal
+          open={open}
+          onOpenChange={() => setOpen(false)}
+          className={styles.overlay}
+        >
+          <div className={styles.container}>
+            <span>Переименовать папку</span>
+            <input
+              defaultValue={folderName}
+              onChange={(e) => setFolder(e.target.value)}
+            />
+            <button
+              onClick={() => {
+                handleRenameFolder(id);
+              }}
+            >
+              Ок
+            </button>
+            <button onClick={() => setOpen(false)}>Отменить</button>
+          </div>
+        </Modal>
+      )}
     </>
   );
 };

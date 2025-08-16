@@ -33,7 +33,7 @@ export const foldersSlice = createSlice({
         }
       }
     },
-    changeFolderName(
+    renameFolder(
       state,
       { payload }: PayloadAction<{ id: string; folderName: string }>,
     ) {
@@ -59,9 +59,5 @@ export const selectCurrentFolder = (state: RootState) =>
 export const selectFolderById = (state: RootState, id: string) =>
   state.folder.folder.filter((folder) => folder.id === id);
 
-export const {
-  addFolder,
-  deleteFolder,
-  changeFolderName,
-  changeCurrentFolder,
-} = foldersSlice.actions;
+export const { addFolder, deleteFolder, renameFolder, changeCurrentFolder } =
+  foldersSlice.actions;

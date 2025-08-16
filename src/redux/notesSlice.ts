@@ -159,6 +159,7 @@ export const {
   addNote,
   updateTitle,
   updateBody,
+  updateNotesFolder,
   deleteNote,
   deleteNotesByFolder,
 } = notesSlice.actions;

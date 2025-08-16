@@ -25,7 +25,27 @@ export const foldersSlice = createSlice({
       state.currentFolder = payload;
     },
     deleteFolder(state, { payload }: PayloadAction<string>) {
-      state.folder.filter((folder) => folder.id !== payload);
+      const folder = state.folder.filter((folder) => folder.id === payload);
+      if (folder) {
+        state.folder = state.folder.filter((folder) => folder.id !== payload);
+        if (folder[0].folderName === state.currentFolder) {
+          state.currentFolder = "";
+        }
+      }
+    },
+    changeFolderName(
+      state,
+      { payload }: PayloadAction<{ id: string; folderName: string }>,
+    ) {
+      const folder = state.folder.find((folder) => folder.id === payload.id);
+      if (folder) {
+        if (folder.folderName === state.currentFolder) {
+          state.currentFolder = payload.folderName;
+        }
+
+        folder.folderName = payload.folderName;
+        state.currentFolder = payload.folderName;
+      }
     },
     changeCurrentFolder(state, { payload }: PayloadAction<string>) {
       state.currentFolder = payload;
@@ -36,5 +56,12 @@ export const foldersSlice = createSlice({
 export const selectFolders = (state: RootState) => state.folder.folder;
 export const selectCurrentFolder = (state: RootState) =>
   state.folder.currentFolder;
-export const { addFolder, deleteFolder, changeCurrentFolder } =
-  foldersSlice.actions;
+export const selectFolderById = (state: RootState, id: string) =>
+  state.folder.folder.filter((folder) => folder.id === id);
+
+export const {
+  addFolder,
+  deleteFolder,
+  changeFolderName,
+  changeCurrentFolder,
+} = foldersSlice.actions;

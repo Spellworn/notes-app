@@ -1,4 +1,4 @@
-import { type MouseEvent, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { addFolder } from "../../redux/foldersSlice.ts";
 import { useAppDispatch } from "../../redux/store.ts";
 import { Button, Modal } from "@gravity-ui/uikit";
@@ -9,13 +9,16 @@ export const ModalAddFolder = () => {
   const [open, setOpen] = useState(false);
   const [folder, setFolder] = useState("");
 
-  const handleAddFolder = useCallback(
-    (event: MouseEvent<HTMLButtonElement>) => {
-      event.preventDefault();
+  const handleAddFolder = useCallback(() => {
+    if (folder) {
       dispatch(addFolder(folder));
-    },
-    [dispatch, folder],
-  );
+      setOpen(false);
+      setFolder("");
+    } else {
+      console.log("Нада сделать алерт или чет еще чтобы заполнил папку падла");
+      alert("Введите название папки");
+    }
+  }, [dispatch, folder]);
 
   return (
     <div>
@@ -32,10 +35,8 @@ export const ModalAddFolder = () => {
             onChange={(e) => setFolder(e.target.value)}
           />
           <button
-            type="submit"
-            onClick={(event) => {
-              setOpen(false);
-              handleAddFolder(event);
+            onClick={() => {
+              handleAddFolder();
             }}
           >
             Ок

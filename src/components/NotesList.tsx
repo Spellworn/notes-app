@@ -5,17 +5,15 @@ import { useAppSelector } from "../redux/store.ts";
 import { NotesSearch } from "./NotesSearch.tsx";
 import { useState } from "react";
 import { useDebounce } from "../hooks/useDebounce.ts";
+import { selectCurrentFolder } from "../redux/foldersSlice.ts";
 
-interface NotesListProps {
-  folder: string;
-}
-
-export const NotesList = ({ folder }: NotesListProps) => {
+export const NotesList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const currentFolder = useAppSelector(selectCurrentFolder);
 
   const notesIds = useAppSelector(
-    selectSearchedItemsByFolder(debouncedSearchTerm, folder),
+    selectSearchedItemsByFolder(debouncedSearchTerm, currentFolder),
   );
 
   return (

@@ -1,134 +1,137 @@
 import {
-  createAsyncThunk,
+  createSelector,
   createSlice,
-  nanoid,
+  type EntityState,
   type PayloadAction,
 } from "@reduxjs/toolkit";
-import type { RootState } from "./store.ts";
+import {
+  type NoteAdd,
+  type NoteId,
+  type Notes,
+  type UpdateDataAction,
+} from "./Note";
+import { fetchNotes } from "./thunks.ts";
+import { notesAdapter } from "./adapters.ts";
 
-interface Data {
-  posts: Notes[];
-  total: number;
-  skip: number;
-  limit: number;
-}
-
-interface Notes {
-  id: string;
-  title: string;
-  body: string;
-  date: string;
-}
+type StatusType = "error" | "loading" | "fulfilled";
 
 interface NotesState {
-  notes: Notes[];
-  search: string;
-  loading: boolean;
-  error: string | null;
+  notes: EntityState<Notes, NoteId>;
+  status?: StatusType;
 }
 
-const url = "https://dummyjson.com/posts";
 const initialState: NotesState = {
-  notes: [],
-  search: "",
-  loading: false,
-  error: null,
+  notes: notesAdapter.getInitialState(),
 };
-
-export const fetchNotes = createAsyncThunk("todos/fetchNotes", async () => {
-  const response = await fetch(url);
-  const result: Data = await response.json();
-
-  const now = new Date();
-  const oneYearAgo = new Date(now.setFullYear(now.getFullYear() - 1));
-
-  const getRandomDate = (start: Date, end: Date) => {
-    return new Date(
-      start.getTime() + Math.random() * (end.getTime() - start.getTime()),
-    ).toISOString();
-  };
-  const orderedNotes = result.posts.map((note) => ({
-    id: nanoid(),
-    title: note.title,
-    body: note.body,
-    date: getRandomDate(oneYearAgo, new Date()),
-  }));
-  return orderedNotes.slice().sort((a, b) => b.date.localeCompare(a.date));
-});
 
 export const notesSlice = createSlice({
   name: "notes",
   initialState,
   reducers: {
-    noteAdded(state, { payload }: PayloadAction<string>) {
-      state.notes.unshift({
-        id: payload,
+    addNote(state, { payload }: PayloadAction<NoteAdd>) {
+      notesAdapter.addOne(state.notes, {
+        id: payload.id,
         title: "",
         body: "",
+        // TODO: thunk
         date: new Date().toISOString(),
+        folder: payload.folder ? payload.folder : "Заметки",
       });
     },
-    noteUpdated: (
-      state,
-      {
-        payload,
-      }: PayloadAction<{
-        id: string | number;
-        text: string | null;
-        title: boolean;
-      }>,
-    ) => {
-      const note = state.notes.find((note: Notes) => note.id === payload.id);
-      if (note && payload.text === null) {
-        if (payload.title) {
-          note.title = "";
-        } else {
-          note.body = "";
-        }
-      }
-      if (note && payload.text !== null) {
-        if (payload.title) {
-          note.title = payload.text;
-        } else {
-          note.body = payload.text;
-        }
+
+    updateTitle: (state, { payload }: PayloadAction<UpdateDataAction>) => {
+      if (payload.id) {
+        notesAdapter.upsertOne(state.notes, {
+          ...state.notes.entities[payload.id],
+          title: payload.text,
+        });
       }
     },
-    noteDeleted: (state, { payload }: PayloadAction<string>) => {
-      state.notes = state.notes.filter((note: Notes) => note.id !== payload);
+
+    updateBody: (state, { payload }: PayloadAction<UpdateDataAction>) => {
+      if (payload.id) {
+        notesAdapter.upsertOne(state.notes, {
+          ...state.notes.entities[payload.id],
+          body: payload.text,
+        });
+      }
     },
-    searchSet: (state, { payload }: PayloadAction<string>) => {
-      state.search = payload;
+
+    deleteNote: (state, { payload }: PayloadAction<NoteId>) => {
+      notesAdapter.removeOne(state.notes, payload);
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchNotes.pending, (state) => {
-        state.loading = true;
+        state.status = "loading";
       })
       .addCase(fetchNotes.fulfilled, (state, action) => {
-        state.loading = false;
-        state.notes = action.payload;
+        notesAdapter.upsertMany(state.notes, action.payload);
+        state.status = "fulfilled";
       })
-      .addCase(fetchNotes.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || "Failed to fetch todos";
+      .addCase(fetchNotes.rejected, (state) => {
+        state.status = "error";
       });
+  },
+  selectors: {
+    notes: (state) => state.notes,
   },
 });
 
-export const selectSearchedItems = (state: RootState) => {
-  const { notes, search } = state.notes;
-  if (!search) return notes;
+export const { selectors: notesSelectors } = notesSlice;
 
-  return notes.filter(
-    (note: Notes) =>
-      note.title.toLowerCase().includes(search.toLowerCase()) ||
-      note.body.toLowerCase().includes(search.toLowerCase()),
-  );
-};
+// адаптеру нужно понимать в общем сторе как дойти до наших notes
+export const adapterSelectors = notesAdapter.getSelectors(notesSelectors.notes);
 
-export const { searchSet, noteAdded, noteUpdated, noteDeleted } =
+export const selectNoteById = createSelector(
+  [adapterSelectors.selectEntities, (_, id: NoteId | undefined) => id],
+  (notes, id) => {
+    if (!id) {
+      return undefined;
+    }
+    return notes[id];
+  },
+);
+
+export const selectSearchedItemsByFolder = (search: string, folder: string) =>
+  createSelector([adapterSelectors.selectAll], (notes) => {
+    if (!search)
+      return notes
+        .filter((note) =>
+          folder
+            ? (note.title || note.body) && note.folder === folder
+            : note.title || note.body,
+        )
+        .map((note) => note.id);
+
+    return notes
+      .filter((note: Notes) =>
+        folder
+          ? (note.title?.toLowerCase().includes(search.toLowerCase()) ||
+              note.body?.toLowerCase().includes(search.toLowerCase())) &&
+            note.folder === folder
+          : note.title?.toLowerCase().includes(search.toLowerCase()) ||
+            note.body?.toLowerCase().includes(search.toLowerCase()),
+      )
+      .map((note) => note.id);
+  });
+
+// export const selectSearchedItems = (search: string) =>
+//   createSelector([adapterSelectors.selectAll], (notes) => {
+//     if (!search)
+//       return notes
+//         .filter((note) => note.title || note.body)
+//         .map((note) => note.id);
+//
+//     return notes
+//       .filter(
+//         (note: Notes) =>
+//           note.title?.toLowerCase().includes(search.toLowerCase()) ||
+//           note.body?.toLowerCase().includes(search.toLowerCase()),
+//       )
+//       .map((note) => note.id);
+//   });
+
+export const { addNote, updateTitle, updateBody, deleteNote } =
   notesSlice.actions;
-export const selectNotes = (state: RootState) => state.notes.notes;
-export const selectId = (state: RootState) => state.notes.notes[0].id;

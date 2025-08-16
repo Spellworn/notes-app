@@ -1,22 +1,31 @@
-import { selectSearchedItems } from "../redux/notesSlice.ts";
+import { selectSearchedItemsByFolder } from "../redux/notesSlice.ts";
 import { Notes } from "./Notes.tsx";
 import styles from "../modules/NotesList.module.css";
-
-import { useAppSelector } from "../redux/hooks.ts";
+import { useAppSelector } from "../redux/store.ts";
+import { NotesSearch } from "./NotesSearch.tsx";
+import { useState } from "react";
+import { useDebounce } from "../hooks/useDebounce.ts";
+import { selectCurrentFolder } from "../redux/foldersSlice.ts";
 
 export const NotesList = () => {
-  const notes = useAppSelector(selectSearchedItems);
+  const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const currentFolder = useAppSelector(selectCurrentFolder);
+
+  const notesIds = useAppSelector(
+    selectSearchedItemsByFolder(debouncedSearchTerm, currentFolder),
+  );
+
   return (
-    <ul className={styles.notesWrapper}>
-      {notes.map((note) => (
-        <Notes
-          id={note.id}
-          title={note.title}
-          body={note.body}
-          key={note.id}
-          date={note.date}
-        />
-      ))}
-    </ul>
+    <>
+      <div className={styles.container}>
+        <NotesSearch searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      </div>
+      <ul className={styles.notesWrapper}>
+        {notesIds.map((noteId) => (
+          <Notes id={noteId} key={noteId} />
+        ))}
+      </ul>
+    </>
   );
 };

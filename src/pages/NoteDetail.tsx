@@ -1,62 +1,38 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../redux/hooks.ts";
-import { noteDeleted, noteUpdated, selectNotes } from "../redux/notesSlice.ts";
-import * as React from "react";
+import { useCallback } from "react";
+import { useAppDispatch, useAppSelector } from "../redux/store";
+import { deleteNote, selectNoteById } from "../redux/notesSlice.ts";
+import type { NoteId } from "../redux/Note.ts";
+import { NotesUpdateFields } from "../components/NotesUpdateFields.tsx";
 
 export const NoteDetail = () => {
+  const { id } = useParams<NoteId>();
+  const note = useAppSelector((state) => selectNoteById(state, id));
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { id } = useParams();
 
-  const notes = useAppSelector(selectNotes);
-  const note = notes.find((note) => note.id === id);
-
-  if (!note || !id) {
-    return <span>Заметка не найдена</span>;
-  }
-
-  const handleChangeTitle = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    dispatch(noteUpdated({ id, text: e.currentTarget.value, title: true }));
-  };
-  const handleChangeBody = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    dispatch(noteUpdated({ id, text: e.currentTarget.value, title: false }));
-  };
-
-  const handleDeleteNote = () => {
-    dispatch(noteDeleted(id));
-    navigate("/");
-  };
-
-  const handleReturn = () => {
-    if (!note.title && !note.body) {
-      handleDeleteNote();
+  const handleDeleteNote = useCallback(() => {
+    if (id) {
+      dispatch(deleteNote(id));
+      navigate("/");
     }
-    navigate("/");
-  };
-
-  const handlePopState = () => {
-    if (!note.title && !note.body) {
-      handleDeleteNote();
-    }
-  };
-
-  window.addEventListener("popstate", handlePopState);
+  }, [dispatch, id, navigate]);
 
   return (
     <div>
-      <textarea
-        onChange={handleChangeTitle}
-        value={note.title}
-        placeholder={"Введите заголовок"}
-      />
-      <textarea
-        onChange={handleChangeBody}
-        value={note.body}
-        placeholder={"Введите текст"}
-      />
-
-      <button onClick={handleReturn}> Обратно вернуца </button>
-      <button onClick={handleDeleteNote}> удалить </button>
+      {!note && (
+        <>
+          <h1>Заметка не фурычит</h1>
+          <button onClick={() => navigate("/")}>Обратно вернуца</button>
+        </>
+      )}
+      {note && (
+        <>
+          <NotesUpdateFields id={id} />
+          <button onClick={() => navigate("/")}>Обратно вернуца</button>
+          <button onClick={handleDeleteNote}>удалить</button>
+        </>
+      )}
     </div>
   );
 };

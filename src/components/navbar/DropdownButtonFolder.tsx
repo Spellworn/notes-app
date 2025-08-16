@@ -1,14 +1,13 @@
-import { deleteFolder, renameFolder } from "../../redux/foldersSlice.ts";
-import { DropdownMenu, Modal } from "@gravity-ui/uikit";
+import { deleteFolder } from "../../redux/foldersSlice.ts";
+import { DropdownMenu } from "@gravity-ui/uikit";
 import { useAppDispatch, useAppSelector } from "../../redux/store.ts";
 import {
   deleteNotesByFolder,
   selectIdsByFolder,
-  updateNotesFolder,
 } from "../../redux/notesSlice.ts";
 // import styles from "../../modules/DropdownButtonFolder.module.css";
 import { useCallback, useState } from "react";
-import styles from "../../modules/ModalAddFolder.module.css";
+import { ModalWindow } from "./ModalWindow.tsx";
 
 interface DropdownButtonProps {
   id: string;
@@ -32,23 +31,6 @@ export const DropdownButtonFolder = ({
     [dispatch, idsByFolder],
   );
 
-  const handleRenameFolder = useCallback(
-    (id: string) => {
-      if (folder) {
-        dispatch(renameFolder({ id, folderName: folder }));
-        dispatch(updateNotesFolder({ ids: idsByFolder, folderName: folder }));
-        setOpen(false);
-        setFolder("");
-      } else {
-        console.log(
-          "Нада сделать алерт или чет еще чтобы заполнил папку падла",
-        );
-        alert("Введите название папки");
-      }
-    },
-    [dispatch, folder, idsByFolder],
-  );
-
   return (
     <>
       <DropdownMenu
@@ -65,27 +47,16 @@ export const DropdownButtonFolder = ({
         ]}
       />
       {open && (
-        <Modal
+        <ModalWindow
           open={open}
-          onOpenChange={() => setOpen(false)}
-          className={styles.overlay}
-        >
-          <div className={styles.container}>
-            <span>Переименовать папку</span>
-            <input
-              defaultValue={folderName}
-              onChange={(e) => setFolder(e.target.value)}
-            />
-            <button
-              onClick={() => {
-                handleRenameFolder(id);
-              }}
-            >
-              Ок
-            </button>
-            <button onClick={() => setOpen(false)}>Отменить</button>
-          </div>
-        </Modal>
+          setOpen={setOpen}
+          folder={folder}
+          setFolder={setFolder}
+          action={"edit"}
+          id={id}
+          folderName={folderName}
+          idsByFolder={idsByFolder}
+        />
       )}
     </>
   );

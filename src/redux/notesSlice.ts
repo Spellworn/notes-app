@@ -57,8 +57,24 @@ export const notesSlice = createSlice({
       }
     },
 
+    updateNotesFolder: (
+      state,
+      { payload }: PayloadAction<{ ids: NoteId[]; folderName: string }>,
+    ) => {
+      if (payload.ids) {
+        const update = payload.ids.map((id) => ({
+          id,
+          changes: { folder: payload.folderName },
+        }));
+
+        notesAdapter.updateMany(state.notes, update);
+      }
+    },
     deleteNote: (state, { payload }: PayloadAction<NoteId>) => {
       notesAdapter.removeOne(state.notes, payload);
+    },
+    deleteNotesByFolder: (state, { payload }: PayloadAction<NoteId[]>) => {
+      notesAdapter.removeMany(state.notes, payload);
     },
   },
   extraReducers: (builder) => {
@@ -93,6 +109,12 @@ export const selectNoteById = createSelector(
     return notes[id];
   },
 );
+
+export const selectIdsByFolder = (folder: string) =>
+  createSelector([adapterSelectors.selectAll], (notes) => {
+    const notesByFolder = notes.filter((note) => note.folder === folder);
+    return Object.values(notesByFolder).map((note) => note.id);
+  });
 
 export const selectSearchedItemsByFolder = (search: string, folder: string) =>
   createSelector([adapterSelectors.selectAll], (notes) => {
@@ -133,5 +155,11 @@ export const selectSearchedItemsByFolder = (search: string, folder: string) =>
 //       .map((note) => note.id);
 //   });
 
-export const { addNote, updateTitle, updateBody, deleteNote } =
-  notesSlice.actions;
+export const {
+  addNote,
+  updateTitle,
+  updateBody,
+  updateNotesFolder,
+  deleteNote,
+  deleteNotesByFolder,
+} = notesSlice.actions;

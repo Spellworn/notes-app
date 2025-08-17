@@ -7,6 +7,8 @@ import {
 } from "../redux/notesSlice.ts";
 import type { NoteId } from "../redux/Note.ts";
 import { useDebounce } from "../hooks/useDebounce.ts";
+import { TextArea } from "@gravity-ui/uikit";
+import styles from "../modules/NotesUpdateFields.module.css";
 
 interface NotesUpdateFieldsProps {
   id: NoteId | undefined;
@@ -49,18 +51,23 @@ export const NotesUpdateFields = ({ id }: NotesUpdateFieldsProps) => {
 
   return (
     note && (
-      <>
-        <textarea
+      <div className={styles.container}>
+        <TextArea
           onChange={(e) => setUpdatedTitleTerm(e?.currentTarget?.value)}
           defaultValue={updatedTitleTerm}
           placeholder={"Введите заголовок"}
+          view={"clear"}
+          size={"l"}
+          className={styles.title}
         />
-        <textarea
+        <TextArea
           onChange={(e) => setUpdatedBodyTerm(e?.currentTarget?.value)}
           defaultValue={updatedBodyTerm}
           placeholder={"Введите текст"}
+          view={"clear"}
+          size={"m"}
         />
-      </>
+      </div>
     )
   );
 };

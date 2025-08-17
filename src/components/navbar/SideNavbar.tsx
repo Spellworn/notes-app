@@ -1,42 +1,30 @@
 import styles from "../../modules/SideNavbar.module.css";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
-import { useAppDispatch, useAppSelector } from "../../redux/store.ts";
-import {
-  changeCurrentFolder,
-  selectFolders,
-} from "../../redux/foldersSlice.ts";
-import { ModalAddFolder } from "./ModalAddFolder.tsx";
+import { AddFolder } from "./AddFolder.tsx";
 import { NavbarButton } from "./NavbarButton.tsx";
+import { Folders } from "./Folders.tsx";
 
 export const SideNavbar = () => {
-  const dispatch = useAppDispatch();
-  const folders = useAppSelector(selectFolders);
   const [navbar, setNavbar] = useState(true);
 
-  const handleChangeCurrentFolder = useCallback(
-    (folderName: string) => {
-      dispatch(changeCurrentFolder(folderName));
-    },
-    [dispatch],
-  );
-
   return (
-    <div>
-      <NavbarButton navbar={navbar} setNavbar={setNavbar} />
+    <>
+      {!navbar && <NavbarButton navbar={navbar} setNavbar={setNavbar} />}
+
       {navbar && (
         <div className={styles.container}>
-          {folders.map((folder) => (
-            <button
-              key={folder.id}
-              onClick={() => handleChangeCurrentFolder(folder.folderName)}
-            >
-              {folder.folderName}
-            </button>
-          ))}
-          <ModalAddFolder />
+          <div className={styles.topSection}>
+            <NavbarButton navbar={navbar} setNavbar={setNavbar} />
+          </div>
+          <div className={styles.middleSection}>
+            <Folders />
+          </div>
+          <div className={styles.bottomSection}>
+            <AddFolder />
+          </div>
         </div>
       )}
-    </div>
+    </>
   );
 };

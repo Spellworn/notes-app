@@ -1,0 +1,49 @@
+
+.container {
+    display: flex;
+    flex-direction: row;
+
+}
+
+.contentContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.icon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.buttonBack {
+    width: 30px;
+    height: 30px;
+    border: 0;
+    background: none;
+    padding: 3px;
+}
+
+.buttonBack:hover {
+    transform: scale(90%);
+    border: 0;
+    background-color: #ecebeb;
+    border-radius: 4px;
+}
+
+.buttonTrash {
+    width: 30px;
+    height: 30px;
+    border: 0;
+    background: none;
+    padding: 3px;
+}
+
+.buttonTrash:hover {
+    transform: scale(90%);
+    border: 0;
+    background-color: #ecebeb;
+    border-radius: 4px;
+}
+
+

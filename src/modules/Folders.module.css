@@ -1,0 +1,19 @@
+.container {
+    display: flex;
+    align-items: baseline;
+}
+
+.button {
+    all: unset;
+    font-size: 2vh;
+    padding-right: 4px;
+}
+
+.button:hover {
+    transform: scale(95%);
+    border: 0;
+    border-radius: 4px;
+    background:none;
+    color: #E4AF0A;
+}
+

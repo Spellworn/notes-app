@@ -8,6 +8,7 @@ import {
 // import styles from "../../modules/DropdownButtonFolder.module.css";
 import { useCallback, useState } from "react";
 import { ModalWindow } from "./ModalWindow.tsx";
+import styles from "../../modules/DropdownButtonFolder.module.css";
 
 interface DropdownButtonProps {
   id: string;
@@ -34,6 +35,7 @@ export const DropdownButtonFolder = ({
   return (
     <>
       <DropdownMenu
+        switcherWrapperClassName={styles.dropdown}
         items={[
           {
             action: () => setOpen(true),

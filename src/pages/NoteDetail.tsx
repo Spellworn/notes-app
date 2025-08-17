@@ -4,6 +4,10 @@ import { useAppDispatch, useAppSelector } from "../redux/store";
 import { deleteNote, selectNoteById } from "../redux/notesSlice.ts";
 import type { NoteId } from "../redux/Note.ts";
 import { NotesUpdateFields } from "../components/NotesUpdateFields.tsx";
+import styles from "../modules/NoteDetail.module.css";
+import { SideNavbar } from "../components/navbar/SideNavbar.tsx";
+import backButton from "../assets/backButton.svg";
+import trashButton from "../assets/trash.svg";
 
 export const NoteDetail = () => {
   const { id } = useParams<NoteId>();
@@ -27,11 +31,18 @@ export const NoteDetail = () => {
         </>
       )}
       {note && (
-        <>
-          <NotesUpdateFields id={id} />
-          <button onClick={() => navigate("/")}>Обратно вернуца</button>
-          <button onClick={handleDeleteNote}>удалить</button>
-        </>
+        <div className={styles.container}>
+          <SideNavbar />
+          <button onClick={() => navigate("/")} className={styles.buttonBack}>
+            <img src={backButton} alt="Back" />
+          </button>
+          <button onClick={handleDeleteNote} className={styles.buttonTrash}>
+            <img src={trashButton} alt="Back" />
+          </button>
+          <div className={styles.contentContainer}>
+            <NotesUpdateFields id={id} />
+          </div>
+        </div>
       )}
     </div>
   );

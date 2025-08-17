@@ -9,14 +9,22 @@ export const SideNavbar = () => {
   const [navbar, setNavbar] = useState(true);
 
   return (
-    <div>
-      <NavbarButton navbar={navbar} setNavbar={setNavbar} />
+    <>
+      {!navbar && <NavbarButton navbar={navbar} setNavbar={setNavbar} />}
+
       {navbar && (
         <div className={styles.container}>
-          <Folders />
-          <AddFolder />
+          <div className={styles.topSection}>
+            <NavbarButton navbar={navbar} setNavbar={setNavbar} />
+          </div>
+          <div className={styles.middleSection}>
+            <Folders />
+          </div>
+          <div className={styles.bottomSection}>
+            <AddFolder />
+          </div>
         </div>
       )}
-    </div>
+    </>
   );
 };

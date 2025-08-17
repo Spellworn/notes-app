@@ -1,0 +1,25 @@
+.buttonContainer {
+    height: auto;
+    width: auto;
+    position: relative;
+    justify-content: flex-start;
+
+}
+
+
+.navbarButton {
+    width: 30px;
+    height: 30px;
+    border: 0;
+    background: none;
+    padding: 3px ;
+    display: flex;
+    align-items: flex-start;
+}
+
+.navbarButton:hover {
+    transform: scale(90%);
+    border: 0;
+    background-color: #ecebeb;
+    border-radius: 4px;
+}

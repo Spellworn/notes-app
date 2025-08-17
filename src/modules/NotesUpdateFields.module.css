@@ -1,0 +1,19 @@
+.container {
+    padding: 0 100px 0 100px;
+}
+
+.title {
+    font-weight: bold;
+    font-size: larger;
+    --g-text-input-border-color-active: #F2BB4B;
+    border: 0 solid;
+    --g-text-area-placeholder-color: gray;
+}
+
+.body {
+    font-weight: lighter;
+    font-size: small;
+    word-break: normal;
+    border: 1px solid;
+    --g-text-area-placeholder-color: gray;
+}

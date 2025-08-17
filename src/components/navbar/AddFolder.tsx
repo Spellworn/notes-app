@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Button } from "@gravity-ui/uikit";
 import { ModalWindow } from "./ModalWindow.tsx";
+import styles from "../../modules/AddFolder.module.css";
 
 export const AddFolder = () => {
   const [open, setOpen] = useState(false);
@@ -8,7 +8,9 @@ export const AddFolder = () => {
 
   return (
     <div>
-      <Button onClick={() => setOpen(true)}>Новая папка</Button>
+      <button onClick={() => setOpen(true)} className={styles.button}>
+        Новая папка
+      </button>
       <ModalWindow
         open={open}
         setOpen={setOpen}

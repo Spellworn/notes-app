@@ -26,7 +26,7 @@ export const fetchNotes = createAsyncThunk("todos/fetchNotes", async () => {
     title: note.title,
     body: note.body,
     date: getRandomDate(),
-    folder: "Заметки",
+    folder: "",
   }));
 
   return orderedNotes.slice().sort((a, b) => b.date.localeCompare(a.date));

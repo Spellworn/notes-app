@@ -29,7 +29,13 @@ export const Folders = () => {
   );
 
   return (
-    <>
+    <div>
+      <button
+        onClick={() => handleChangeCurrentFolder("")}
+        className={activeFolder === "" ? styles.buttonActive : styles.button}
+      >
+        Все заметки
+      </button>
       {folders.map((folder) => (
         <div key={folder.id} className={styles.container}>
           <button
@@ -42,9 +48,10 @@ export const Folders = () => {
           >
             {folder.folderName}
           </button>
+
           <DropdownButtonFolder id={folder.id} folderName={folder.folderName} />
         </div>
       ))}
-    </>
+    </div>
   );
 };

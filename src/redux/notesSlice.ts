@@ -36,7 +36,7 @@ export const notesSlice = createSlice({
         body: "",
         // TODO: thunk
         date: new Date().toISOString(),
-        folder: payload.folder ? payload.folder : "Заметки",
+        folder: payload.folder ? payload.folder : "",
       });
     },
 

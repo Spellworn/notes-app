@@ -5,7 +5,6 @@ import {
   deleteNotesByFolder,
   selectIdsByFolder,
 } from "../../redux/notesSlice.ts";
-// import styles from "../../modules/DropdownButtonFolder.module.css";
 import { useCallback, useState } from "react";
 import { ModalWindow } from "./ModalWindow.tsx";
 import styles from "../../modules/DropdownButtonFolder.module.css";

@@ -12,7 +12,7 @@ export interface Folder {
 }
 
 const initialState: Folder = {
-  folder: [{ folderName: "Заметки", id: nanoid() }],
+  folder: [],
   currentFolder: "",
 };
 

@@ -1,13 +1,16 @@
 import styles from "../../modules/SideNavbar.module.css";
-import { useState } from "react";
 
 import { AddFolder } from "./AddFolder.tsx";
 import { NavbarButton } from "./NavbarButton.tsx";
 import { Folders } from "./Folders.tsx";
+import * as React from "react";
 
-export const SideNavbar = () => {
-  const [navbar, setNavbar] = useState(true);
+interface SideNavbarProps {
+  navbar: boolean;
+  setNavbar: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
+export const SideNavbar = ({ navbar, setNavbar }: SideNavbarProps) => {
   return (
     <>
       {!navbar && <NavbarButton navbar={navbar} setNavbar={setNavbar} />}

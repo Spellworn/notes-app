@@ -2,8 +2,9 @@ import { nanoid } from "@reduxjs/toolkit";
 import { addNote } from "../redux/notesSlice.ts";
 import { useAppDispatch, useAppSelector } from "../redux/store.ts";
 import { useNavigate } from "react-router-dom";
-import styles from "../modules/NotePage.module.css";
+import styles from "../modules/NotesAdd.module.css";
 import { selectCurrentFolder } from "../redux/foldersSlice.ts";
+import addButton from "../assets/addButton.svg";
 
 export const NotesAdd = () => {
   const dispatch = useAppDispatch();
@@ -18,7 +19,7 @@ export const NotesAdd = () => {
 
   return (
     <button onClick={handleAddNote} className={styles.button}>
-      Новая заметка
+      <img src={addButton} alt="Back" />
     </button>
   );
 };

@@ -2,12 +2,11 @@ import styles from "../modules/Header.module.css";
 import { SideNavbar } from "./navbar/SideNavbar.tsx";
 import backButton from "../assets/backButton.svg";
 import { NotesAdd } from "./NotesAdd.tsx";
-import trashButton from "../assets/trash.svg";
-import { useCallback, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import type { NoteId } from "../redux/Note.ts";
-import { useAppDispatch } from "../redux/store.ts";
-import { deleteNote } from "../redux/notesSlice.ts";
+
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { DeleteButton } from "./DeleteButton.tsx";
+import { DropdownChangeNoteFolder } from "./DropdownChangeNoteFolder.tsx";
 
 interface HeaderProps {
   page: "main" | "detail";
@@ -15,16 +14,7 @@ interface HeaderProps {
 
 export const Header = ({ page }: HeaderProps) => {
   const [navbar, setNavbar] = useState(true);
-  const { id } = useParams<NoteId>();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-
-  const handleDeleteNote = useCallback(() => {
-    if (id) {
-      dispatch(deleteNote(id));
-      navigate("/");
-    }
-  }, [dispatch, id, navigate]);
 
   return (
     <div className={styles.container}>
@@ -43,9 +33,12 @@ export const Header = ({ page }: HeaderProps) => {
         {page === "main" && <NotesAdd />}
 
         {page === "detail" && (
-          <button onClick={handleDeleteNote} className={styles.button}>
-            <img src={trashButton} alt="Back" />
-          </button>
+          <>
+            <DeleteButton />
+            <div className={styles.endSection}>
+              <DropdownChangeNoteFolder />
+            </div>
+          </>
         )}
       </div>
     </div>

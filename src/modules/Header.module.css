@@ -6,8 +6,8 @@
 }
 
 .navbarContainer {
-    position: fixed;       /* закрепляем позицию относительно окна */
-    top: 8px;                /* сверху */
+    position: fixed;
+    top: 8px;
     left: 8px;
 }
 

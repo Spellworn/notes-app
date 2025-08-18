@@ -20,6 +20,11 @@ export interface UpdateDataAction {
   text: string | undefined;
 }
 
+export interface UpdateFolderAction {
+  id: NoteId | undefined;
+  folder: string | undefined;
+}
+
 export interface NoteAdd {
   id: NoteId;
   folder: string;

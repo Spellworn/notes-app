@@ -9,6 +9,7 @@ import {
   type NoteId,
   type Notes,
   type UpdateDataAction,
+  type UpdateFolderAction,
 } from "./Note";
 import { fetchNotes } from "./thunks.ts";
 import { notesAdapter } from "./adapters.ts";
@@ -53,6 +54,15 @@ export const notesSlice = createSlice({
         notesAdapter.upsertOne(state.notes, {
           ...state.notes.entities[payload.id],
           body: payload.text,
+        });
+      }
+    },
+
+    updateFolder: (state, { payload }: PayloadAction<UpdateFolderAction>) => {
+      if (payload.id && payload.folder) {
+        notesAdapter.upsertOne(state.notes, {
+          ...state.notes.entities[payload.id],
+          folder: payload.folder,
         });
       }
     },
@@ -159,6 +169,7 @@ export const {
   addNote,
   updateTitle,
   updateBody,
+  updateFolder,
   updateNotesFolder,
   deleteNote,
   deleteNotesByFolder,

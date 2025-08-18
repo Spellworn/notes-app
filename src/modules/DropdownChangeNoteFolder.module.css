@@ -1,0 +1,13 @@
+
+.dropdown {
+    all: unset;
+    color: #E4AF0A;
+    border: 0;
+}
+
+.dropdown:hover {
+    transform: scale(90%);
+    border: none;
+    border-radius: 4px;
+    background-color: #ecebeb;
+}

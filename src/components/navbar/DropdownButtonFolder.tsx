@@ -26,6 +26,7 @@ export const DropdownButtonFolder = ({
   const handleDeleteFolder = useCallback(
     (folderId: string) => {
       dispatch(deleteFolder(folderId));
+      // question: а почему заметки удаляются при удалении папки
       dispatch(deleteNotesByFolder(idsByFolder));
     },
     [dispatch, idsByFolder],

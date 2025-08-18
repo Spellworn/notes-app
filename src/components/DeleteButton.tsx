@@ -11,6 +11,7 @@ export const DeleteButton = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
+  // чебурашкин колбеч
   const handleDeleteNote = useCallback(() => {
     if (id) {
       dispatch(deleteNote(id));

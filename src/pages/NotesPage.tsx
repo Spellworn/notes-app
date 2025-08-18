@@ -10,7 +10,6 @@ export const NotesPage = () => {
   const dispatch = useAppDispatch();
 
   const notes = useAppSelector(adapterSelectors.selectAll);
-  // TODO: в чем разница между || и ??
   useEffect(() => {
     if (notes.length === 0) {
       dispatch(fetchNotes());

@@ -3,7 +3,9 @@ import { ModalWindow } from "./ModalWindow.tsx";
 import styles from "../../modules/AddFolder.module.css";
 
 export const AddFolder = () => {
+  // chore: isOpen
   const [open, setOpen] = useState(false);
+  // chore: folderName
   const [folder, setFolder] = useState("");
 
   return (

@@ -12,6 +12,9 @@ export const DropdownChangeNoteFolder = () => {
   const { id } = useParams<NoteId>();
   const note = useAppSelector((state) => selectNoteById(state, id));
 
+  {
+    /* потенциально уязвимое по перфомансу место, на каждлый рендер новый массив обьектов, c магией внутри */
+  }
   return (
     <DropdownMenu
       switcherWrapperClassName={styles.dropdown}

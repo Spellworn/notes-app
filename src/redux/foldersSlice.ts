@@ -2,6 +2,7 @@ import { createSlice, nanoid, type PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "./store.ts";
 
 export interface FolderType {
+  // предложил бы хотябы алиас юзнуть типа `type FolderName = string`
   folderName: string;
   id: string;
 }
@@ -20,11 +21,14 @@ export const foldersSlice = createSlice({
   name: "folders",
   initialState,
   reducers: {
+    // FolderType
     addFolder(state, { payload }: PayloadAction<string>) {
+      // issue: sideEffect в редюсере
       state.folder.push({ folderName: payload, id: nanoid() });
       state.currentFolder = payload;
     },
     deleteFolder(state, { payload }: PayloadAction<string>) {
+      // грязновато, не получится это через адаптер переписать ?
       const folder = state.folder.filter((folder) => folder.id === payload);
       if (folder) {
         state.folder = state.folder.filter((folder) => folder.id !== payload);
@@ -39,6 +43,7 @@ export const foldersSlice = createSlice({
     ) {
       const folder = state.folder.find((folder) => folder.id === payload.id);
       if (folder) {
+        // херня какая то
         if (folder.folderName === state.currentFolder) {
           state.currentFolder = payload.folderName;
         }
@@ -56,6 +61,7 @@ export const foldersSlice = createSlice({
 export const selectFolders = (state: RootState) => state.folder.folder;
 export const selectCurrentFolder = (state: RootState) =>
   state.folder.currentFolder;
+
 export const selectFolderById = (state: RootState, id: string) =>
   state.folder.folder.filter((folder) => folder.id === id);
 

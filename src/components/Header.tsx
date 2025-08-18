@@ -31,7 +31,6 @@ export const Header = ({ page }: HeaderProps) => {
       )}
       <div className={styles.middleSection}>
         {page === "main" && <NotesAdd />}
-
         {page === "detail" && (
           <>
             <DeleteButton />

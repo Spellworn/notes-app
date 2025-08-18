@@ -18,6 +18,7 @@ export const Folders = () => {
 
   const navigate = useNavigate();
 
+  // ваще для сброса фильтра, предложил бы undefined юзать или null, это очевиднее чем " "
   const handleChangeCurrentFolder = useCallback(
     (folderName: string) => {
       dispatch(changeCurrentFolder(folderName));

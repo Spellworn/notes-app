@@ -5,18 +5,21 @@ import { type Notes as NotesProps } from "../redux/Note.ts";
 import { useAppSelector } from "../redux/store.ts";
 import { selectNoteById } from "../redux/notesSlice.ts";
 
+// в отдельный файл
 const useNavigateToNotes = (id: NotesProps["id"]) => {
   const navigate = useNavigate();
 
   return () => navigate(`/notes/${id}`);
 };
 
+// в отдельный файл
 const getFormattedDate = (date: string) => {
   const timePeriod = formatDistanceToNow(date);
 
   return `${timePeriod} ago`;
 };
 
+// в отдельный тип
 export const Notes = ({ id }: Pick<NotesProps, "id">) => {
   const note = useAppSelector((state) => selectNoteById(state, id));
   const { date, title, body } = note ?? {};

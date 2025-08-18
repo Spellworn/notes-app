@@ -149,22 +149,6 @@ export const selectSearchedItemsByFolder = (search: string, folder: string) =>
       .map((note) => note.id);
   });
 
-// export const selectSearchedItems = (search: string) =>
-//   createSelector([adapterSelectors.selectAll], (notes) => {
-//     if (!search)
-//       return notes
-//         .filter((note) => note.title || note.body)
-//         .map((note) => note.id);
-//
-//     return notes
-//       .filter(
-//         (note: Notes) =>
-//           note.title?.toLowerCase().includes(search.toLowerCase()) ||
-//           note.body?.toLowerCase().includes(search.toLowerCase()),
-//       )
-//       .map((note) => note.id);
-//   });
-
 export const {
   addNote,
   updateTitle,

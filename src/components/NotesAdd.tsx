@@ -6,6 +6,7 @@ import styles from "../modules/NotesAdd.module.css";
 import { selectCurrentFolder } from "../redux/foldersSlice.ts";
 import addButton from "../assets/addButton.svg";
 
+// чистенько
 export const NotesAdd = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();

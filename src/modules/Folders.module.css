@@ -9,7 +9,14 @@
     padding-right: 4px;
 }
 
-.button:hover {
+.buttonActive {
+    all: unset;
+    font-size: 2vh;
+    padding-right: 4px;
+    color: #E4AF0A;
+}
+
+.button:hover, .buttonActive:hover {
     transform: scale(95%);
     border: 0;
     border-radius: 4px;

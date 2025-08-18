@@ -1,0 +1,15 @@
+.button {
+    width: 30px;
+    height: 30px;
+    border: 0;
+    background: none;
+    padding: 3px;
+
+}
+
+.button:hover  {
+    transform: scale(90%);
+    border: none;
+    background-color: #ecebeb;
+    border-radius: 4px;
+}

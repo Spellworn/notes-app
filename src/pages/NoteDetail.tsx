@@ -1,26 +1,19 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useCallback } from "react";
-import { useAppDispatch, useAppSelector } from "../redux/store";
-import { deleteNote, selectNoteById } from "../redux/notesSlice.ts";
-import type { NoteId } from "../redux/Note.ts";
+// import { useState } from "react";
+import { useAppSelector } from "../redux/store";
+import { selectNoteById } from "../redux/notesSlice.ts";
 import { NotesUpdateFields } from "../components/NotesUpdateFields.tsx";
 import styles from "../modules/NoteDetail.module.css";
-import { SideNavbar } from "../components/navbar/SideNavbar.tsx";
-import backButton from "../assets/backButton.svg";
-import trashButton from "../assets/trash.svg";
+// import { NotesSearch } from "../components/NotesSearch.tsx";
+import { Header } from "../components/Header.tsx";
+import type { NoteId } from "../redux/Note.ts";
 
 export const NoteDetail = () => {
+  // const [searchTerm, setSearchTerm] = useState("");
   const { id } = useParams<NoteId>();
-  const note = useAppSelector((state) => selectNoteById(state, id));
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
 
-  const handleDeleteNote = useCallback(() => {
-    if (id) {
-      dispatch(deleteNote(id));
-      navigate("/");
-    }
-  }, [dispatch, id, navigate]);
+  const note = useAppSelector((state) => selectNoteById(state, id));
 
   return (
     <div>
@@ -31,14 +24,9 @@ export const NoteDetail = () => {
         </>
       )}
       {note && (
-        <div className={styles.container}>
-          <SideNavbar />
-          <button onClick={() => navigate("/")} className={styles.buttonBack}>
-            <img src={backButton} alt="Back" />
-          </button>
-          <button onClick={handleDeleteNote} className={styles.buttonTrash}>
-            <img src={trashButton} alt="Back" />
-          </button>
+        <div>
+          <Header page={"detail"} />
+          {/*<NotesSearch searchTerm={searchTerm} setSearchTerm={setSearchTerm} />*/}
           <div className={styles.contentContainer}>
             <NotesUpdateFields id={id} />
           </div>

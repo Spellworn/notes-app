@@ -1,0 +1,68 @@
+.container {
+    all: unset;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.navbarContainer {
+    position: fixed;
+    top: 8px;
+    left: 8px;
+}
+
+.button {
+    width: 30px;
+    height: 30px;
+    border: 0;
+    background: none;
+    padding: 3px;
+}
+
+.backButton {
+    width: 30px;
+    height: 30px;
+    border: 0;
+    background: none;
+    padding: 3px;
+    transform: translateX(30px);
+}
+
+.backButton:hover {
+    transform: scale(90%) translateX(30px);
+    border: none;
+    background-color: #ecebeb;
+    border-radius: 4px;
+}
+
+.button:hover  {
+    transform: scale(90%);
+    border: none;
+    background-color: #ecebeb;
+    border-radius: 4px;
+}
+
+.buttonOpen:hover {
+    transform: translateX(7vw) scale(90%);
+    border: none;
+    background-color: #ecebeb;
+    border-radius: 4px;
+}
+
+
+.buttonOpen {
+    width: 30px;
+    height: 30px;
+    border: 0;
+    background: none;
+    padding: 3px;
+    transform: translateX(7vw);
+}
+
+.middleSection {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}

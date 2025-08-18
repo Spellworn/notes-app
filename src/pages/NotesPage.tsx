@@ -4,9 +4,7 @@ import styles from "../modules/NotePage.module.css";
 import { useAppDispatch, useAppSelector } from "../redux/store.ts";
 import { adapterSelectors } from "../redux/notesSlice.ts";
 import { fetchNotes } from "../redux/thunks.ts";
-
-import { NotesAdd } from "../components/NotesAdd.tsx";
-import { SideNavbar } from "../components/navbar/SideNavbar.tsx";
+import { Header } from "../components/Header.tsx";
 
 export const NotesPage = () => {
   const dispatch = useAppDispatch();
@@ -20,15 +18,9 @@ export const NotesPage = () => {
   }, [dispatch, notes]);
 
   return (
-    <div className={styles.sideNavbar}>
-      <SideNavbar />
-
-      <div className={styles.container}>
-        <h2>Note App</h2>
-        <NotesAdd />
-
-        <NotesList />
-      </div>
+    <div className={styles.container}>
+      <Header page={"main"} />
+      <NotesList />
     </div>
   );
 };

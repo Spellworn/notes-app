@@ -4,8 +4,6 @@ import type { Dispatch, SetStateAction } from "react";
 
 interface NavbarButtonProps {
   navbar: boolean;
-  // setNavbar: React.Dispatch<React.SetStateAction<boolean>>;
-  // vite итак уже знает что ты в реакте
   setNavbar: Dispatch<SetStateAction<boolean>>;
 }
 

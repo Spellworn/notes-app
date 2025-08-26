@@ -1,4 +1,9 @@
-import { deleteFolder } from "../../redux/foldersSlice.ts";
+import {
+  changeCurrentFolder,
+  deleteFolder,
+  selectCurrentFolder,
+  selectFolderById,
+} from "../../redux/foldersSlice.ts";
 import { DropdownMenu } from "@gravity-ui/uikit";
 import { useAppDispatch, useAppSelector } from "../../redux/store.ts";
 import {
@@ -6,7 +11,7 @@ import {
   selectIdsByFolder,
 } from "../../redux/notesSlice.ts";
 import { useCallback, useState } from "react";
-import { ModalWindow } from "./ModalWindow.tsx";
+import { ModalWindow } from "../modal/ModalWindow.tsx";
 import styles from "../../modules/DropdownButtonFolder.module.css";
 
 interface DropdownButtonProps {
@@ -18,18 +23,23 @@ export const DropdownButtonFolder = ({
   id,
   folderName,
 }: DropdownButtonProps) => {
-  const [open, setOpen] = useState(false);
-  const [folder, setFolder] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+
   const dispatch = useAppDispatch();
   const idsByFolder = useAppSelector(selectIdsByFolder(folderName));
+  const folder = useAppSelector((state) => selectFolderById(state, id));
+  const currentFolder = useAppSelector(selectCurrentFolder);
 
   const handleDeleteFolder = useCallback(
     (folderId: string) => {
       dispatch(deleteFolder(folderId));
-      // question: а почему заметки удаляются при удалении папки
       dispatch(deleteNotesByFolder(idsByFolder));
+
+      if (folder && folder.folderName === currentFolder) {
+        dispatch(changeCurrentFolder(undefined));
+      }
     },
-    [dispatch, idsByFolder],
+    [currentFolder, dispatch, folder, idsByFolder],
   );
 
   return (
@@ -38,7 +48,7 @@ export const DropdownButtonFolder = ({
         switcherWrapperClassName={styles.dropdown}
         items={[
           {
-            action: () => setOpen(true),
+            action: () => setIsOpen(true),
             text: "Переименовать",
           },
           {
@@ -48,16 +58,12 @@ export const DropdownButtonFolder = ({
           },
         ]}
       />
-      {open && (
+      {isOpen && (
         <ModalWindow
-          open={open}
-          setOpen={setOpen}
-          folder={folder}
-          setFolder={setFolder}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
           action={"edit"}
           id={id}
-          folderName={folderName}
-          idsByFolder={idsByFolder}
         />
       )}
     </>

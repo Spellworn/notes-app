@@ -1,5 +1,5 @@
 import styles from "../modules/Header.module.css";
-import { SideNavbar } from "./navbar/SideNavbar.tsx";
+import { AsideNavbar } from "./navbar/AsideNavbar.tsx";
 import backButton from "../assets/backButton.svg";
 import { NotesAdd } from "./NotesAdd.tsx";
 
@@ -19,7 +19,7 @@ export const Header = ({ page }: HeaderProps) => {
   return (
     <div className={styles.container}>
       <div className={styles.navbarContainer}>
-        <SideNavbar navbar={navbar} setNavbar={setNavbar} />
+        <AsideNavbar navbar={navbar} setNavbar={setNavbar} />
       </div>
       {page === "detail" && (
         <button

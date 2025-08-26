@@ -5,13 +5,12 @@ import { NavbarButton } from "./NavbarButton.tsx";
 import { Folders } from "./Folders.tsx";
 import type { Dispatch, SetStateAction } from "react";
 
-interface SideNavbarProps {
+interface AsideNavbarProps {
   navbar: boolean;
   setNavbar: Dispatch<SetStateAction<boolean>>;
 }
 
-// может все таки AsideNavbar
-export const SideNavbar = ({ navbar, setNavbar }: SideNavbarProps) => {
+export const AsideNavbar = ({ navbar, setNavbar }: AsideNavbarProps) => {
   return (
     <>
       {!navbar && <NavbarButton navbar={navbar} setNavbar={setNavbar} />}

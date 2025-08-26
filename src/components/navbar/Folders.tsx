@@ -9,6 +9,7 @@ import { DropdownButtonFolder } from "./DropdownButtonFolder.tsx";
 import styles from "../../modules/Folders.module.css";
 import { useNavigate, useParams } from "react-router-dom";
 import type { NoteId } from "../../redux/Note.ts";
+import type { CurrentFolderType } from "../../redux/Folder.ts";
 
 export const Folders = () => {
   const activeFolder = useAppSelector(selectCurrentFolder);
@@ -18,9 +19,8 @@ export const Folders = () => {
 
   const navigate = useNavigate();
 
-  // ваще для сброса фильтра, предложил бы undefined юзать или null, это очевиднее чем " "
   const handleChangeCurrentFolder = useCallback(
-    (folderName: string) => {
+    (folderName: CurrentFolderType) => {
       dispatch(changeCurrentFolder(folderName));
       if (id) {
         navigate("/");
@@ -32,8 +32,10 @@ export const Folders = () => {
   return (
     <div>
       <button
-        onClick={() => handleChangeCurrentFolder("")}
-        className={activeFolder === "" ? styles.buttonActive : styles.button}
+        onClick={() => handleChangeCurrentFolder(undefined)}
+        className={
+          activeFolder === undefined ? styles.buttonActive : styles.button
+        }
       >
         Все заметки
       </button>
@@ -49,7 +51,6 @@ export const Folders = () => {
           >
             {folder.folderName}
           </button>
-
           <DropdownButtonFolder id={folder.id} folderName={folder.folderName} />
         </div>
       ))}

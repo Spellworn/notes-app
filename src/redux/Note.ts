@@ -1,13 +1,13 @@
 export type NoteId = string;
 
-// говорил вроде уже, типы лучше писать рядом с местом где они юзаюца(можно и в отдельном файле)
+// говорил вроде уже, типы лучше писать рядом с местом где они юзаюца(можно и в отдельном файле) (ТАК ТЫ САМ НАФИК ТАК СДЕЛАЛ ОТДЕЛЬНА ВЫНЕС)
 
 export interface Notes {
   id: NoteId;
   title: string | undefined;
   body: string | undefined;
   date: string;
-  folder: string;
+  folder: string | undefined;
 }
 
 export interface Data {
@@ -29,5 +29,5 @@ export interface UpdateFolderAction {
 
 export interface NoteAdd {
   id: NoteId;
-  folder: string;
+  folder: string | undefined;
 }

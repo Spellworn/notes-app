@@ -5,7 +5,6 @@ import {
   nanoid,
   type PayloadAction,
 } from "@reduxjs/toolkit";
-import type { RootState } from "./store.ts";
 import type {
   CurrentFolderType,
   FolderId,
@@ -55,22 +54,14 @@ export const foldersSlice = createSlice({
   },
   selectors: {
     folders: (state) => state.folder,
+    currentFolder: (state) => state.currentFolder,
   },
 });
 
-export const { selectors: foldersSelectors } = foldersSlice;
+export const { selectors: sliceSelectors } = foldersSlice;
 export const foldersAdapterSelectors = foldersAdapter.getSelectors(
-  foldersSelectors.folders,
+  sliceSelectors.folders,
 );
-
-//сука не получается написать селектор этот, все ломается когла я папку добавляю, уже как тока не пробовал, прикола не понимаю
-
-export const selectFolders = (state: RootState) => {
-  return Object.values(state.folder.folder.entities);
-};
-
-export const selectCurrentFolder = (state: RootState) =>
-  state.folder.currentFolder;
 
 export const selectFolderById = createSelector(
   [foldersAdapterSelectors.selectEntities, (_, id: FolderId | undefined) => id],

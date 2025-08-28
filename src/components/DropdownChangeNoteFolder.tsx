@@ -10,9 +10,7 @@ import type { NoteId } from "../redux/Note.ts";
 import styles from "../modules/DropdownChangeNoteFolder.module.css";
 
 export const DropdownChangeNoteFolder = () => {
-  const folders = useAppSelector((state) =>
-    foldersAdapterSelectors.selectAll({ folders: state.folder }),
-  );
+  const folders = useAppSelector(foldersAdapterSelectors.selectAll);
   const dispatch = useAppDispatch();
   const { id } = useParams<NoteId>();
   const note = useAppSelector((state) => selectNoteById(state, id));

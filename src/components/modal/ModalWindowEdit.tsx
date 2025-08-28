@@ -24,8 +24,10 @@ export const ModalWindowEdit = ({
   id,
 }: ModalWindowEditProps) => {
   const dispatch = useAppDispatch();
-  const folder = useAppSelector((state) => selectFolderById(state, id!));
-  const idsByFolder = useAppSelector(selectIdsByFolder(folder!.folderName));
+  const folder = useAppSelector((state) => selectFolderById(state, id));
+  const idsByFolder = useAppSelector(
+    selectIdsByFolder(folder?.folderName ?? ""),
+  );
 
   const handleRenameFolder = (id: string) => {
     if (folderName) {
@@ -56,7 +58,7 @@ export const ModalWindowEdit = ({
     <>
       <span>Переименовать папку</span>
       <input
-        placeholder={folder!.folderName}
+        placeholder={folder?.folderName}
         onChange={(e) => setFolder(e.target.value)}
       />
       <button onClick={() => handleRenameFolder(id!)}>Ок</button>

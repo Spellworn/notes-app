@@ -1,8 +1,8 @@
 import {
   changeCurrentFolder,
   deleteFolder,
-  selectCurrentFolder,
   selectFolderById,
+  sliceSelectors,
 } from "../../redux/foldersSlice.ts";
 import { DropdownMenu } from "@gravity-ui/uikit";
 import { useAppDispatch, useAppSelector } from "../../redux/store.ts";
@@ -28,7 +28,7 @@ export const DropdownButtonFolder = ({
   const dispatch = useAppDispatch();
   const idsByFolder = useAppSelector(selectIdsByFolder(folderName));
   const folder = useAppSelector((state) => selectFolderById(state, id));
-  const currentFolder = useAppSelector(selectCurrentFolder);
+  const currentFolder = useAppSelector(sliceSelectors.currentFolder);
 
   const handleDeleteFolder = useCallback(
     (folderId: string) => {

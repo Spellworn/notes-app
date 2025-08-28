@@ -12,6 +12,7 @@ import type {
   FolderType,
 } from "./Folder.ts";
 import { foldersAdapter } from "./adapters.ts";
+import type { RootState } from "./store.ts";
 
 interface FolderState {
   folder: EntityState<FolderType, FolderId>;
@@ -24,10 +25,9 @@ const initialState: FolderState = {
 };
 
 export const foldersSlice = createSlice({
-  name: "folders",
+  name: "folder",
   initialState,
   reducers: {
-    // FolderType
     addFolder: (state, { payload }: PayloadAction<FolderName>) => {
       foldersAdapter.addOne(state.folder, {
         id: nanoid(),
@@ -53,14 +53,14 @@ export const foldersSlice = createSlice({
     },
   },
   selectors: {
-    folders: (state) => state.folder,
+    folder: (state) => state.folder,
     currentFolder: (state) => state.currentFolder,
   },
 });
 
 export const { selectors: sliceSelectors } = foldersSlice;
 export const foldersAdapterSelectors = foldersAdapter.getSelectors(
-  sliceSelectors.folders,
+  (state: RootState) => sliceSelectors.folder(state),
 );
 
 export const selectFolderById = createSelector(

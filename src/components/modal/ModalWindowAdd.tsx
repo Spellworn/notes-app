@@ -5,7 +5,7 @@ import { useAppDispatch } from "../../redux/store.ts";
 interface ModalWindowAddProps {
   folderName: string | undefined;
   setIsOpen: (newOpen: boolean) => void;
-  setFolderName: (newFolder: string) => void;
+  setFolderName: (newFolder: string | undefined) => void;
 }
 
 export const ModalWindowAdd = ({
@@ -20,7 +20,7 @@ export const ModalWindowAdd = ({
       dispatch(addFolder(folderName));
       dispatch(changeCurrentFolder(folderName));
       setIsOpen(false);
-      setFolderName("");
+      setFolderName(undefined);
     } else {
       toast.error("Введите название папки", {
         position: "top-center",

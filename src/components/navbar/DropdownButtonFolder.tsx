@@ -10,7 +10,7 @@ import {
   deleteNotesByFolder,
   selectIdsByFolder,
 } from "../../redux/notesSlice.ts";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { ModalWindow } from "../modal/ModalWindow.tsx";
 import styles from "../../modules/DropdownButtonFolder.module.css";
 
@@ -27,20 +27,17 @@ export const DropdownButtonFolder = ({
 
   const dispatch = useAppDispatch();
   const idsByFolder = useAppSelector(selectIdsByFolder(folderName));
-  const folder = useAppSelector((state) => selectFolderById(state, id));
+  const folderToDelete = useAppSelector((state) => selectFolderById(state, id));
   const currentFolder = useAppSelector(sliceSelectors.currentFolder);
 
-  const handleDeleteFolder = useCallback(
-    (folderId: string) => {
-      dispatch(deleteFolder(folderId));
-      dispatch(deleteNotesByFolder(idsByFolder));
+  const handleDeleteFolder = (folderId: string) => {
+    dispatch(deleteFolder(folderId));
+    dispatch(deleteNotesByFolder(idsByFolder));
 
-      if (folder && folder.folderName === currentFolder) {
-        dispatch(changeCurrentFolder(undefined));
-      }
-    },
-    [currentFolder, dispatch, folder, idsByFolder],
-  );
+    if (folderToDelete && folderToDelete.folderName === currentFolder) {
+      dispatch(changeCurrentFolder(undefined));
+    }
+  };
 
   return (
     <>

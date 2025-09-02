@@ -1,12 +1,15 @@
 import styles from "../modules/Notes.module.css";
-import { type Notes as NotesProps } from "../redux/Note.ts";
+
 import { useAppSelector } from "../redux/store.ts";
 import { selectNoteById } from "../redux/notesSlice.ts";
 import { useNavigateToNotes } from "../hooks/useNavigateToNotes.ts";
 import { getFormattedDate } from "../functions/getFormattedDate.ts";
 
-// в отдельный тип (не понял)
-export const Notes = ({ id }: Pick<NotesProps, "id">) => {
+interface NotesProps {
+  id: string;
+}
+
+export const Notes = ({ id }: NotesProps) => {
   const note = useAppSelector((state) => selectNoteById(state, id));
   const { date, title, body } = note ?? {};
   const navigate = useNavigateToNotes(id);

@@ -41,12 +41,10 @@ export const foldersSlice = createSlice({
       state,
       { payload }: PayloadAction<{ id: string; folderName: string }>,
     ) => {
-      if (payload.id) {
-        foldersAdapter.upsertOne(state.folder, {
-          ...state.folder.entities[payload.id],
-          folderName: payload.folderName,
-        });
-      }
+      foldersAdapter.upsertOne(state.folder, {
+        ...state.folder.entities[payload.id],
+        folderName: payload.folderName,
+      });
     },
     changeCurrentFolder(state, { payload }: PayloadAction<CurrentFolderType>) {
       state.currentFolder = payload;

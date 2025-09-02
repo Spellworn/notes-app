@@ -13,14 +13,14 @@ import { Bounce, toast } from "react-toastify";
 interface ModalWindowEditProps {
   folderName: string | undefined;
   setIsOpen: (newOpen: boolean) => void;
-  setFolder: (newFolder: string) => void;
+  setFolderName: (newFolder: string | undefined) => void;
   id: string | undefined;
 }
 
 export const ModalWindowEdit = ({
   folderName,
   setIsOpen,
-  setFolder,
+  setFolderName,
   id,
 }: ModalWindowEditProps) => {
   const dispatch = useAppDispatch();
@@ -39,7 +39,7 @@ export const ModalWindowEdit = ({
         );
       }
       setIsOpen(false);
-      setFolder("");
+      setFolderName(undefined);
     } else {
       toast.error("Введите название папки", {
         position: "top-center",
@@ -59,7 +59,7 @@ export const ModalWindowEdit = ({
       <span>Переименовать папку</span>
       <input
         placeholder={folder?.folderName}
-        onChange={(e) => setFolder(e.target.value)}
+        onChange={(e) => setFolderName(e.target.value)}
       />
       <button onClick={() => handleRenameFolder(id!)}>Ок</button>
     </>

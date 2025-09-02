@@ -12,7 +12,29 @@ interface ModalProps {
 }
 
 export const ModalWindow = ({ isOpen, setIsOpen, action, id }: ModalProps) => {
-  const [folderName, setFolderName] = useState("");
+  const [folderName, setFolderName] = useState<string | undefined>(undefined);
+
+  const modalWindowChoice = () => {
+    switch (action) {
+      case "add":
+        return (
+          <ModalWindowAdd
+            folderName={folderName}
+            setIsOpen={setIsOpen}
+            setFolderName={setFolderName}
+          />
+        );
+      case "edit":
+        return (
+          <ModalWindowEdit
+            folderName={folderName}
+            setIsOpen={setIsOpen}
+            setFolderName={setFolderName}
+            id={id}
+          />
+        );
+    }
+  };
 
   return (
     <Modal
@@ -21,20 +43,7 @@ export const ModalWindow = ({ isOpen, setIsOpen, action, id }: ModalProps) => {
       className={styles.overlay}
     >
       <div className={styles.container}>
-        {action === "add" ? (
-          <ModalWindowAdd
-            folderName={folderName}
-            setIsOpen={setIsOpen}
-            setFolderName={setFolderName}
-          />
-        ) : (
-          <ModalWindowEdit
-            folderName={folderName}
-            setIsOpen={setIsOpen}
-            setFolder={setFolderName}
-            id={id}
-          />
-        )}
+        {modalWindowChoice()}
         <button onClick={() => setIsOpen(false)}>Отменить</button>
       </div>
     </Modal>

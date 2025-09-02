@@ -8,6 +8,7 @@ import type { NoteId } from "../redux/Note.ts";
 
 export const NoteDetail = () => {
   const { id } = useParams<NoteId>();
+  console.log(id);
   const navigate = useNavigate();
 
   const note = useAppSelector((state) => selectNoteById(state, id));

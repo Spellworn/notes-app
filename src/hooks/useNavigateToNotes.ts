@@ -1,7 +1,8 @@
-import type { Notes as NotesProps } from "../redux/Note.ts";
 import { useNavigate } from "react-router-dom";
 
-export const useNavigateToNotes = (id: NotesProps["id"]) => {
+type UseNavigateToNotesProps = string;
+
+export const useNavigateToNotes = (id: UseNavigateToNotesProps) => {
   const navigate = useNavigate();
 
   return () => navigate(`/notes/${id}`);

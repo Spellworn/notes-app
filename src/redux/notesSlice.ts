@@ -13,6 +13,7 @@ import {
 } from "./Note";
 import { fetchNotes } from "./thunks.ts";
 import { notesAdapter } from "./adapters.ts";
+import type { CurrentFolderType } from "./Folder.ts";
 
 type StatusType = "error" | "loading" | "fulfilled";
 
@@ -34,9 +35,8 @@ export const notesSlice = createSlice({
         id: payload.id,
         title: "",
         body: "",
-        // TODO: thunk
         date: new Date().toISOString(),
-        folder: payload.folder ? payload.folder : "",
+        folder: payload.folder ? payload.folder : undefined,
       });
     },
 
@@ -107,11 +107,12 @@ export const notesSlice = createSlice({
 
 export const { selectors: notesSelectors } = notesSlice;
 
-// адаптеру нужно понимать в общем сторе как дойти до наших notes
-export const adapterSelectors = notesAdapter.getSelectors(notesSelectors.notes);
+export const notesAdapterSelectors = notesAdapter.getSelectors(
+  notesSelectors.notes,
+);
 
 export const selectNoteById = createSelector(
-  [adapterSelectors.selectEntities, (_, id: NoteId | undefined) => id],
+  [notesAdapterSelectors.selectEntities, (_, id: NoteId | undefined) => id],
   (notes, id) => {
     if (!id) {
       return undefined;
@@ -121,13 +122,16 @@ export const selectNoteById = createSelector(
 );
 
 export const selectIdsByFolder = (folder: string) =>
-  createSelector([adapterSelectors.selectAll], (notes) => {
+  createSelector([notesAdapterSelectors.selectAll], (notes) => {
     const notesByFolder = notes.filter((note) => note.folder === folder);
     return Object.values(notesByFolder).map((note) => note.id);
   });
 
-export const selectSearchedItemsByFolder = (search: string, folder: string) =>
-  createSelector([adapterSelectors.selectAll], (notes) => {
+export const selectSearchedItemsByFolder = (
+  search: string,
+  folder: CurrentFolderType,
+) =>
+  createSelector([notesAdapterSelectors.selectAll], (notes) => {
     if (!search)
       return notes
         .filter((note) =>
@@ -148,22 +152,6 @@ export const selectSearchedItemsByFolder = (search: string, folder: string) =>
       )
       .map((note) => note.id);
   });
-
-// export const selectSearchedItems = (search: string) =>
-//   createSelector([adapterSelectors.selectAll], (notes) => {
-//     if (!search)
-//       return notes
-//         .filter((note) => note.title || note.body)
-//         .map((note) => note.id);
-//
-//     return notes
-//       .filter(
-//         (note: Notes) =>
-//           note.title?.toLowerCase().includes(search.toLowerCase()) ||
-//           note.body?.toLowerCase().includes(search.toLowerCase()),
-//       )
-//       .map((note) => note.id);
-//   });
 
 export const {
   addNote,

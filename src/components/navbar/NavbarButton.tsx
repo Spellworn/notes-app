@@ -1,10 +1,10 @@
 import styles from "../../modules/NavbarButton.module.css";
-import * as React from "react";
 import menuButton from "../../assets/menu.svg";
+import type { Dispatch, SetStateAction } from "react";
 
 interface NavbarButtonProps {
   navbar: boolean;
-  setNavbar: React.Dispatch<React.SetStateAction<boolean>>;
+  setNavbar: Dispatch<SetStateAction<boolean>>;
 }
 
 export const NavbarButton = ({ navbar, setNavbar }: NavbarButtonProps) => {

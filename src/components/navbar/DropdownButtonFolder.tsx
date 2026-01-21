@@ -1,12 +1,17 @@
-import { deleteFolder } from "../../redux/foldersSlice.ts";
+import {
+  changeCurrentFolder,
+  deleteFolder,
+  selectFolderById,
+  sliceSelectors,
+} from "../../redux/foldersSlice.ts";
 import { DropdownMenu } from "@gravity-ui/uikit";
 import { useAppDispatch, useAppSelector } from "../../redux/store.ts";
 import {
   deleteNotesByFolder,
   selectIdsByFolder,
 } from "../../redux/notesSlice.ts";
-import { useCallback, useState } from "react";
-import { ModalWindow } from "./ModalWindow.tsx";
+import { useState } from "react";
+import { ModalWindow } from "../modal/ModalWindow.tsx";
 import styles from "../../modules/DropdownButtonFolder.module.css";
 
 interface DropdownButtonProps {
@@ -18,18 +23,21 @@ export const DropdownButtonFolder = ({
   id,
   folderName,
 }: DropdownButtonProps) => {
-  const [open, setOpen] = useState(false);
-  const [folder, setFolder] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+
   const dispatch = useAppDispatch();
   const idsByFolder = useAppSelector(selectIdsByFolder(folderName));
+  const folderToDelete = useAppSelector((state) => selectFolderById(state, id));
+  const currentFolder = useAppSelector(sliceSelectors.currentFolder);
 
-  const handleDeleteFolder = useCallback(
-    (folderId: string) => {
-      dispatch(deleteFolder(folderId));
-      dispatch(deleteNotesByFolder(idsByFolder));
-    },
-    [dispatch, idsByFolder],
-  );
+  const handleDeleteFolder = (folderId: string) => {
+    dispatch(deleteFolder(folderId));
+    dispatch(deleteNotesByFolder(idsByFolder));
+
+    if (folderToDelete && folderToDelete.folderName === currentFolder) {
+      dispatch(changeCurrentFolder(undefined));
+    }
+  };
 
   return (
     <>
@@ -37,7 +45,7 @@ export const DropdownButtonFolder = ({
         switcherWrapperClassName={styles.dropdown}
         items={[
           {
-            action: () => setOpen(true),
+            action: () => setIsOpen(true),
             text: "Переименовать",
           },
           {
@@ -47,16 +55,12 @@ export const DropdownButtonFolder = ({
           },
         ]}
       />
-      {open && (
+      {isOpen && (
         <ModalWindow
-          open={open}
-          setOpen={setOpen}
-          folder={folder}
-          setFolder={setFolder}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
           action={"edit"}
           id={id}
-          folderName={folderName}
-          idsByFolder={idsByFolder}
         />
       )}
     </>

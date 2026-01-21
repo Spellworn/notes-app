@@ -3,13 +3,13 @@ import { addNote } from "../redux/notesSlice.ts";
 import { useAppDispatch, useAppSelector } from "../redux/store.ts";
 import { useNavigate } from "react-router-dom";
 import styles from "../modules/NotesAdd.module.css";
-import { selectCurrentFolder } from "../redux/foldersSlice.ts";
 import addButton from "../assets/addButton.svg";
+import { sliceSelectors } from "../redux/foldersSlice.ts";
 
 export const NotesAdd = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const currentFolder = useAppSelector(selectCurrentFolder);
+  const currentFolder = useAppSelector(sliceSelectors.currentFolder);
 
   const handleAddNote = () => {
     const id = nanoid();

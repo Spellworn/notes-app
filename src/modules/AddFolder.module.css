@@ -1,5 +1,6 @@
 .button {
     all: unset;
+    /* лучше dvh */
     font-size: 2vh;
     padding-right: 4px;
 }

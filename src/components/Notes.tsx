@@ -1,23 +1,15 @@
 import styles from "../modules/Notes.module.css";
-import { formatDistanceToNow } from "date-fns";
-import { useNavigate } from "react-router-dom";
-import { type Notes as NotesProps } from "../redux/Note.ts";
+
 import { useAppSelector } from "../redux/store.ts";
 import { selectNoteById } from "../redux/notesSlice.ts";
+import { useNavigateToNotes } from "../hooks/useNavigateToNotes.ts";
+import { getFormattedDate } from "../functions/getFormattedDate.ts";
 
-const useNavigateToNotes = (id: NotesProps["id"]) => {
-  const navigate = useNavigate();
+interface NotesProps {
+  id: string;
+}
 
-  return () => navigate(`/notes/${id}`);
-};
-
-const getFormattedDate = (date: string) => {
-  const timePeriod = formatDistanceToNow(date);
-
-  return `${timePeriod} ago`;
-};
-
-export const Notes = ({ id }: Pick<NotesProps, "id">) => {
+export const Notes = ({ id }: NotesProps) => {
   const note = useAppSelector((state) => selectNoteById(state, id));
   const { date, title, body } = note ?? {};
   const navigate = useNavigateToNotes(id);

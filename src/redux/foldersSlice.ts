@@ -1,63 +1,75 @@
-import { createSlice, nanoid, type PayloadAction } from "@reduxjs/toolkit";
+import {
+  createSelector,
+  createSlice,
+  type EntityState,
+  nanoid,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
+import type {
+  CurrentFolderType,
+  FolderId,
+  FolderName,
+  FolderType,
+} from "./Folder.ts";
+import { foldersAdapter } from "./adapters.ts";
 import type { RootState } from "./store.ts";
 
-export interface FolderType {
-  folderName: string;
-  id: string;
+interface FolderState {
+  folder: EntityState<FolderType, FolderId>;
+  currentFolder: CurrentFolderType;
 }
 
-export interface Folder {
-  folder: FolderType[];
-  currentFolder: string;
-}
-
-const initialState: Folder = {
-  folder: [],
-  currentFolder: "",
+const initialState: FolderState = {
+  folder: foldersAdapter.getInitialState(),
+  currentFolder: undefined,
 };
 
 export const foldersSlice = createSlice({
-  name: "folders",
+  name: "folder",
   initialState,
   reducers: {
-    addFolder(state, { payload }: PayloadAction<string>) {
-      state.folder.push({ folderName: payload, id: nanoid() });
-      state.currentFolder = payload;
+    addFolder: (state, { payload }: PayloadAction<FolderName>) => {
+      foldersAdapter.addOne(state.folder, {
+        id: nanoid(),
+        folderName: payload,
+      });
     },
-    deleteFolder(state, { payload }: PayloadAction<string>) {
-      const folder = state.folder.filter((folder) => folder.id === payload);
-      if (folder) {
-        state.folder = state.folder.filter((folder) => folder.id !== payload);
-        if (folder[0].folderName === state.currentFolder) {
-          state.currentFolder = "";
-        }
-      }
+    deleteFolder: (state, { payload }: PayloadAction<FolderId>) => {
+      foldersAdapter.removeOne(state.folder, payload);
     },
-    renameFolder(
+    renameFolder: (
       state,
       { payload }: PayloadAction<{ id: string; folderName: string }>,
-    ) {
-      const folder = state.folder.find((folder) => folder.id === payload.id);
-      if (folder) {
-        if (folder.folderName === state.currentFolder) {
-          state.currentFolder = payload.folderName;
-        }
-
-        folder.folderName = payload.folderName;
-        state.currentFolder = payload.folderName;
-      }
+    ) => {
+      foldersAdapter.upsertOne(state.folder, {
+        ...state.folder.entities[payload.id],
+        folderName: payload.folderName,
+      });
     },
-    changeCurrentFolder(state, { payload }: PayloadAction<string>) {
+    changeCurrentFolder(state, { payload }: PayloadAction<CurrentFolderType>) {
       state.currentFolder = payload;
     },
   },
+  selectors: {
+    folder: (state) => state.folder,
+    currentFolder: (state) => state.currentFolder,
+  },
 });
 
-export const selectFolders = (state: RootState) => state.folder.folder;
-export const selectCurrentFolder = (state: RootState) =>
-  state.folder.currentFolder;
-export const selectFolderById = (state: RootState, id: string) =>
-  state.folder.folder.filter((folder) => folder.id === id);
+export const { selectors: sliceSelectors } = foldersSlice;
+export const foldersAdapterSelectors = foldersAdapter.getSelectors(
+  (state: RootState) => sliceSelectors.folder(state),
+);
+
+export const selectFolderById = createSelector(
+  [foldersAdapterSelectors.selectEntities, (_, id: FolderId | undefined) => id],
+  (folders, id) => {
+    if (!id) {
+      return undefined;
+    }
+    return folders[id];
+  },
+);
 
 export const { addFolder, deleteFolder, renameFolder, changeCurrentFolder } =
   foldersSlice.actions;

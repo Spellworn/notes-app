@@ -32,7 +32,6 @@ button:hover {
     }
 }
 
-
 @media (max-width: 700px) {
     .notesWrapper {
         grid-template-columns: repeat(2, 1fr);

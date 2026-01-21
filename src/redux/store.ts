@@ -1,10 +1,15 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { notesSlice } from "./notesSlice.ts";
 import { useDispatch, useSelector } from "react-redux";
 import { foldersSlice } from "./foldersSlice.ts";
 
+export const rootReducer = combineReducers({
+  notes: notesSlice.reducer,
+  folder: foldersSlice.reducer,
+});
+
 export const store = configureStore({
-  reducer: { notes: notesSlice.reducer, folder: foldersSlice.reducer },
+  reducer: rootReducer,
 });
 
 export type AppStore = typeof store;

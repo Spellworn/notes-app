@@ -1,6 +1,5 @@
 import styles from "../modules/Header.module.css";
 import trashButton from "../assets/trash.svg";
-import { useCallback } from "react";
 import { deleteNote } from "../redux/notesSlice.ts";
 import { useNavigate, useParams } from "react-router-dom";
 import type { NoteId } from "../redux/Note.ts";
@@ -11,12 +10,12 @@ export const DeleteButton = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const handleDeleteNote = useCallback(() => {
+  const handleDeleteNote = () => {
     if (id) {
       dispatch(deleteNote(id));
       navigate("/");
     }
-  }, [dispatch, id, navigate]);
+  };
 
   return (
     <>

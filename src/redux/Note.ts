@@ -1,7 +1,5 @@
 export type NoteId = string;
 
-// говорил вроде уже, типы лучше писать рядом с местом где они юзаюца(можно и в отдельном файле) (ТАК ТЫ САМ НАФИК ТАК СДЕЛАЛ ОТДЕЛЬНА ВЫНЕС)
-
 export interface Notes {
   id: NoteId;
   title: string | undefined;

@@ -35,7 +35,6 @@ export const notesSlice = createSlice({
         id: payload.id,
         title: "",
         body: "",
-        // TODO: thunk
         date: new Date().toISOString(),
         folder: payload.folder ? payload.folder : undefined,
       });
@@ -108,7 +107,6 @@ export const notesSlice = createSlice({
 
 export const { selectors: notesSelectors } = notesSlice;
 
-// адаптеру нужно понимать в общем сторе как дойти до наших notes
 export const notesAdapterSelectors = notesAdapter.getSelectors(
   notesSelectors.notes,
 );
